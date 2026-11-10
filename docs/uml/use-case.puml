@@ -1,0 +1,70 @@
+@startuml use-case
+!include style.iuml
+title StudyFlow — діаграма варіантів використання
+left to right direction
+skinparam packageStyle rectangle
+
+actor "Студент\n(учасник групи)" as Student
+actor "Староста" as Headman
+actor "Планувальник\n(cron)" as Cron
+actor "Поштовий сервер\n(SMTP / Mailpit)" as Smtp
+
+rectangle "StudyFlow" {
+  package "Акаунт" {
+    usecase "Зареєструватися" as UC_Register
+    usecase "Увійти / вийти" as UC_Login
+    usecase "Змінити ім'я та пароль" as UC_Profile
+  }
+  package "Дедлайни і календар" {
+    usecase "Переглянути дедлайни\n(фільтри, сортування)" as UC_List
+    usecase "Календар тижня / місяця" as UC_Calendar
+    usecase "Особистий дедлайн\n(створити, змінити, видалити)" as UC_Personal
+    usecase "Відмітити виконання" as UC_Complete
+    usecase "Переглянути прогрес групи" as UC_Progress
+  }
+  package "Група" {
+    usecase "Приєднатися за кодом" as UC_Join
+    usecase "Вийти з групи" as UC_Leave
+    usecase "Канбан: задачі,\nперетягування" as UC_Board
+    usecase "Створити групу" as UC_CreateGroup
+    usecase "Керувати предметами" as UC_Subjects
+    usecase "Груповий дедлайн\n(створити, змінити, видалити)" as UC_GroupDeadline
+    usecase "Керувати учасниками\nі ролями" as UC_Members
+    usecase "Перегенерувати код\nзапрошення" as UC_Code
+  }
+  package "Нагадування" {
+    usecase "Надіслати нагадування\nза N днів до дедлайну" as UC_Remind
+  }
+}
+
+Student --> UC_Register
+Student --> UC_Login
+Student --> UC_Profile
+Student --> UC_List
+Student --> UC_Calendar
+Student --> UC_Personal
+Student --> UC_Complete
+Student --> UC_Progress
+Student --> UC_Join
+Student --> UC_Leave
+Student --> UC_Board
+
+UC_CreateGroup <-- Headman
+UC_Subjects <-- Headman
+UC_GroupDeadline <-- Headman
+UC_Members <-- Headman
+UC_Code <-- Headman
+
+UC_Remind <-- Cron
+UC_Remind --> Smtp
+
+note bottom of Headman
+  Староста — теж учасник групи:
+  йому доступно все, що студенту
+end note
+note right of UC_Remind
+  Лише невиконані дедлайни;
+  один лист на пару
+  «користувач — дедлайн»
+end note
+@enduml

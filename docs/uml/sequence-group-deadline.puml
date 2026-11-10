@@ -1,0 +1,49 @@
+@startuml sequence-group-deadline
+!include style.iuml
+title Груповий дедлайн: староста створює → учасник бачить і відмічає → прогрес
+autonumber
+
+actor "Староста" as H
+actor "Учасник" as M
+participant "Next.js\n(web, rewrites /api)" as Web
+participant "JwtAuthGuard\n+ GroupRoleGuard" as Guard
+participant "DeadlinesController" as Ctrl
+participant "DeadlinesService" as Svc
+participant "ProgressService" as Prog
+database "PostgreSQL" as DB
+
+== Створення (лише HEADMAN) ==
+H -> Web : POST /api/groups/{groupId}/deadlines\n{title, dueAt, subjectId}
+Web -> Guard : проксі (same-origin, Bearer access-токен)
+Guard -> DB : group_members (groupId, userId)
+DB --> Guard : role = HEADMAN
+Guard -> Ctrl : доступ дозволено
+Ctrl -> Svc : createForGroup(userId, groupId, dto)
+Svc -> DB : перевірка: предмет належить групі (D3)
+Svc -> DB : INSERT deadlines (group_id, owner_id)
+Svc -> Prog : forDeadline(id, groupId)
+Prog -> DB : COUNT учасників, COUNT відміток
+Svc --> Web : 201 DeadlineDto {progress: 0 %}
+Web --> H : дедлайн у списку групи
+
+== Учасник бачить і відмічає ==
+M -> Web : GET /api/deadlines?from&to
+Web -> Ctrl : (JwtAuthGuard)
+Ctrl -> Svc : list(userId, filters)
+Svc -> DB : SELECT … WHERE особисті автора\nАБО групи, де він учасник (D5)
+Svc --> M : дедлайн у календарі тижня
+M -> Web : PUT /api/deadlines/{id}/completion
+Web -> Ctrl : (JwtAuthGuard)
+Ctrl -> Svc : complete(userId, id)
+Svc -> DB : видимий? (інакше 404, D6)
+Svc -> DB : UPSERT deadline_completions\n(ідемпотентно)
+Svc --> M : 200 {status: done}
+
+== Староста бачить прогрес ==
+H -> Web : GET /api/deadlines/{id}/progress
+Web -> Ctrl : (JwtAuthGuard)
+Ctrl -> Svc : getProgress(userId, id)
+Svc -> Prog : forDeadline
+Prog -> DB : виконали / учасників групи
+Prog --> H : {total: 2, completed: 1, percent: 50}
+@enduml

@@ -1,0 +1,57 @@
+@startuml component
+!include style.iuml
+title StudyFlow — діаграма компонентів (модульний моноліт)
+
+package "Браузер" {
+  [Сторінки Next.js\n(дашборд, календар, групи,\nканбан, профіль)] as Pages
+  [TanStack Query\n(кеш, оптимістичні оновлення)] as Query
+  [API-клієнт\n(openapi-fetch + згенеровані типи,\naccess-токен у пам'яті)] as Client
+  Pages --> Query
+  Query --> Client
+}
+
+package "apps/web — Next.js 16 (сервер)" {
+  [proxy.ts\n(редірект без refresh-cookie)] as Proxy
+  [rewrites /api/* → API] as Rewrites
+}
+
+package "apps/api — NestJS 12 (модульний моноліт, /api)" {
+  [JwtAuthGuard (глобальний)\nGroupRoleGuard + @GroupRoles] as Guards
+  [auth] as Auth
+  [users] as Users
+  [groups] as Groups
+  [subjects] as Subjects
+  [deadlines\n(+ ProgressService)] as Deadlines
+  [tasks] as Tasks
+  [reminders\n(cron + dev-ендпоінт)] as Reminders
+  [mail] as MailMod
+  [health] as Health
+  [Swagger /api/docs] as Swagger
+  [PrismaService\n(Prisma 7 + adapter-pg)] as Prisma
+
+  Guards ..> Groups
+  Auth --> Users
+  Subjects --> Groups
+  Deadlines --> Groups
+  Tasks --> Groups
+  Reminders --> MailMod
+  Reminders ..> Deadlines : visibleTo()
+  Auth --> Prisma
+  Users --> Prisma
+  Groups --> Prisma
+  Subjects --> Prisma
+  Deadlines --> Prisma
+  Tasks --> Prisma
+  Reminders --> Prisma
+  Health --> Prisma
+}
+
+database "PostgreSQL 16" as DB
+[SMTP (Mailpit у dev)] as SMTP
+
+Client --> Rewrites : HTTP /api/* (same-origin,\nhttpOnly refresh-cookie)
+Pages ..> Proxy
+Rewrites --> Guards : HTTP :3001
+Prisma --> DB : SQL
+MailMod --> SMTP : SMTP
+@enduml

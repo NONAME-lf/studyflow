@@ -1,0 +1,104 @@
+@startuml er
+!include style.iuml
+title StudyFlow — ER-діаграма бази даних (PostgreSQL, 8 таблиць)
+hide circle
+skinparam linetype ortho
+
+entity "users" as users {
+  * id : text <<PK>>
+  --
+  * email : text <<UQ>>
+  * password_hash : text
+  * full_name : text
+  refresh_token_hash : text
+  * reminder_enabled : boolean
+  * reminder_days_before : integer
+  * created_at : timestamp
+}
+
+entity "groups" as groups {
+  * id : text <<PK>>
+  --
+  * name : text
+  * invite_code : text <<UQ>>
+  * created_at : timestamp
+}
+
+entity "group_members" as group_members {
+  * group_id : text <<PK, FK>>
+  * user_id : text <<PK, FK>>
+  --
+  * role : GroupRole
+  * joined_at : timestamp
+}
+
+entity "subjects" as subjects {
+  * id : text <<PK>>
+  --
+  * group_id : text <<FK>>
+  * name : text
+  teacher : text
+  * color : text
+  ..
+  UQ (group_id, name)
+}
+
+entity "deadlines" as deadlines {
+  * id : text <<PK>>
+  --
+  * title : text
+  description : text
+  * due_at : timestamp
+  * priority : Priority
+  * owner_id : text <<FK>>
+  group_id : text <<FK>> (null — особистий)
+  subject_id : text <<FK>>
+  * created_at, updated_at : timestamp
+  ..
+  IDX (group_id, due_at), (owner_id, due_at)
+}
+
+entity "deadline_completions" as completions {
+  * deadline_id : text <<PK, FK>>
+  * user_id : text <<PK, FK>>
+  --
+  * completed_at : timestamp
+}
+
+entity "tasks" as tasks {
+  * id : text <<PK>>
+  --
+  * group_id : text <<FK>>
+  * title : text
+  description : text
+  * status : TaskStatus
+  * position : integer
+  assignee_id : text <<FK>>
+  deadline_id : text <<FK>>
+  * created_by_id : text <<FK>>
+  * created_at, updated_at : timestamp
+  ..
+  IDX (group_id, status, position)
+}
+
+entity "reminder_logs" as reminder_logs {
+  * deadline_id : text <<PK, FK>>
+  * user_id : text <<PK, FK>>
+  --
+  * sent_at : timestamp
+}
+
+users ||--o{ group_members
+groups ||--|{ group_members
+groups ||--o{ subjects
+groups |o--o{ deadlines
+users ||--o{ deadlines
+subjects |o--o{ deadlines
+deadlines ||--o{ completions
+users ||--o{ completions
+groups ||--o{ tasks
+users |o--o{ tasks
+deadlines |o--o{ tasks
+deadlines ||--o{ reminder_logs
+users ||--o{ reminder_logs
+@enduml

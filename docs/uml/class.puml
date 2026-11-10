@@ -1,0 +1,102 @@
+@startuml class
+!include style.iuml
+title StudyFlow — діаграма класів доменної моделі
+hide empty methods
+skinparam nodesep 70
+skinparam ranksep 80
+
+enum GroupRole {
+  HEADMAN
+  MEMBER
+}
+enum Priority {
+  LOW
+  MEDIUM
+  HIGH
+}
+enum TaskStatus {
+  TODO
+  IN_PROGRESS
+  DONE
+}
+
+class User {
+  id : UUID
+  email : String {unique}
+  passwordHash : String
+  fullName : String
+  refreshTokenHash : String [0..1]
+  reminderEnabled : Boolean = true
+  reminderDaysBefore : Int = 1
+  createdAt : DateTime
+}
+
+class Group {
+  id : UUID
+  name : String
+  inviteCode : String {unique, 8 символів}
+  createdAt : DateTime
+}
+
+class GroupMember {
+  role : GroupRole = MEMBER
+  joinedAt : DateTime
+}
+
+class Subject {
+  id : UUID
+  name : String {unique у групі}
+  teacher : String [0..1]
+  color : String = "#3B82F6"
+}
+
+class Deadline {
+  id : UUID
+  title : String
+  description : String [0..1]
+  dueAt : DateTime
+  priority : Priority = MEDIUM
+  createdAt : DateTime
+  updatedAt : DateTime
+  --
+  статус для користувача (обчислюється):
+  pending | done | overdue
+}
+
+class DeadlineCompletion {
+  completedAt : DateTime
+}
+
+class Task {
+  id : UUID
+  title : String
+  description : String [0..1]
+  status : TaskStatus = TODO
+  position : Int
+  createdAt : DateTime
+  updatedAt : DateTime
+}
+
+class ReminderLog {
+  sentAt : DateTime
+}
+
+User "1" -- "0..*" GroupMember
+Group "1" *-- "1..*" GroupMember : учасники
+Group "1" *-- "0..*" Subject
+Group "0..1" *-- "0..*" Deadline : групові\n(null — особистий)
+User "1" -- "0..*" Deadline : автор >
+Subject "0..1" -- "0..*" Deadline
+Deadline "1" *-- "0..*" DeadlineCompletion
+User "1" -- "0..*" DeadlineCompletion : відмітив >
+Group "1" *-- "0..*" Task
+User "0..1" -- "0..*" Task : виконавець >
+User "1" -- "0..*" Task : створив >
+Deadline "0..1" -- "0..*" Task : пов'язаний
+Deadline "1" *-- "0..*" ReminderLog
+User "1" -- "0..*" ReminderLog
+
+GroupMember ..> GroupRole
+Deadline ..> Priority
+Task ..> TaskStatus
+@enduml

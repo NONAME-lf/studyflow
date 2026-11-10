@@ -21,7 +21,8 @@
     "db:seed": "pnpm --filter @studyflow/api db:seed",
     "db:reset": "pnpm --filter @studyflow/api db:reset",
     "openapi:export": "pnpm --filter @studyflow/api openapi:export && pnpm --filter @studyflow/web openapi:types",
-    "screenshots": "pnpm --filter @studyflow/web screenshots"
+    "screenshots": "pnpm --filter @studyflow/web screenshots",
+    "uml": "sh scripts/uml.sh"
   },
   "devDependencies": {
     "prettier": "^3.9.10"

@@ -32,7 +32,7 @@ if (!process.argv.includes('--no-run')) {
     'unit + coverage',
     `pnpm exec vitest run --reporter=default --reporter=json --outputFile.json=${dataDir}/unit.json ` +
       `--coverage --coverage.reporter=text --coverage.reporter=json-summary ` +
-      `--coverage.reportsDirectory=${dataDir}/coverage`,
+      `--coverage.reportsDirectory=${dataDir}/coverage-unit`,
     api,
   );
   run(
@@ -147,7 +147,7 @@ const plan = readPlan();
 const unit = fromVitest(readJson(join(dataDir, 'unit.json')));
 const integration = fromVitest(readJson(join(dataDir, 'integration.json')));
 const e2e = fromPlaywright(readJson(join(dataDir, 'e2e.json')));
-const coverage = readJson(join(dataDir, 'coverage/coverage-summary.json'));
+const coverage = readJson(join(dataDir, 'coverage-unit/coverage-summary.json'));
 
 if (unit) {
   writeFileSync(

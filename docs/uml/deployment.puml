@@ -1,0 +1,43 @@
+@startuml deployment
+!include style.iuml
+title StudyFlow — діаграма розгортання
+
+node "Ноутбук розробника (dev)" as Dev {
+  node "Node.js 24" {
+    artifact "apps/web\nnext dev :3000" as WebDev
+    artifact "apps/api\nnest start --watch :3001" as ApiDev
+  }
+  node "Docker Compose" {
+    database "postgres:16\n:5433 → 5432\nstudyflow, studyflow_test" as PgDev
+    node "axllent/mailpit\nSMTP :1025, UI :8025" as Mailpit
+  }
+  WebDev --> ApiDev : rewrites /api/*
+  ApiDev --> PgDev : Prisma (adapter-pg)
+  ApiDev --> Mailpit : SMTP
+}
+
+node "GitHub" as GH {
+  node "GitHub Actions" {
+    artifact "CI: lint, typecheck, unit,\nміграції, integration, build" as CI
+    database "postgres:16 (service)" as PgCi
+  }
+  CI --> PgCi
+}
+
+node "Цільовий prod (етап 5)" as Prod {
+  node "Vercel" {
+    artifact "apps/web (Next.js)" as WebProd
+  }
+  node "Railway / Render" {
+    artifact "apps/api (Dockerfile)" as ApiProd
+  }
+  database "Керований PostgreSQL" as PgProd
+  node "SMTP-провайдер\n(безкоштовний тариф)" as SmtpProd
+  WebProd --> ApiProd : HTTPS /api/*
+  ApiProd --> PgProd
+  ApiProd --> SmtpProd
+}
+
+Dev ..> GH : git push / pull request
+GH ..> Prod : деплой після злиття в main
+@enduml

@@ -1,0 +1,31 @@
+@startuml state
+!include style.iuml
+title Стани: дедлайн для конкретного користувача і задача канбану
+
+state "Дедлайн (статус для користувача, D4)" as DL {
+  [*] --> pending : створено
+  pending : не виконано,\ndue_at ≥ now
+  overdue : не виконано,\ndue_at < now
+  done : є запис у\ndeadline_completions
+  pending --> overdue : настав термін
+  pending --> done : PUT /completion
+  overdue --> done : PUT /completion
+  done --> pending : DELETE /completion\n[due_at ≥ now]
+  done --> overdue : DELETE /completion\n[due_at < now]
+  done --> [*] : дедлайн видалено
+}
+
+state "Задача канбану (K2)" as TK {
+  [*] --> TODO : створено
+  TODO : До виконання
+  IN_PROGRESS : В роботі
+  DONE : Готово
+  TODO --> IN_PROGRESS : перетягування
+  IN_PROGRESS --> DONE : перетягування
+  DONE --> IN_PROGRESS : перетягування
+  TODO --> DONE : перетягування
+  DONE --> TODO : перетягування
+  IN_PROGRESS --> TODO : перетягування
+  DONE --> [*] : видалено автором\nабо старостою
+}
+@enduml

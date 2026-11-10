@@ -1,0 +1,35 @@
+@startuml sequence-reminders
+!include style.iuml
+title Нагадування про дедлайни (US-23)
+autonumber
+
+participant "SchedulerRegistry\n(cron REMINDER_CRON)\nабо POST /api/dev/reminders/run" as Cron
+participant "RemindersService" as Svc
+database "PostgreSQL" as DB
+participant "MailService\n(Nodemailer)" as Mail
+participant "SMTP\n(Mailpit у dev)" as Smtp
+
+Cron -> Svc : run(now)
+Svc -> DB : users WHERE reminder_enabled = true
+DB --> Svc : користувачі + reminderDaysBefore (N)
+
+loop для кожного користувача
+  Svc -> DB : дедлайни: видимі користувачу,\nnow ≤ due_at ≤ now + N днів,\nне виконані ним, без reminder_logs (R1)
+  DB --> Svc : пари (користувач, дедлайн)
+  loop для кожної пари
+    Svc -> Mail : send(лист українською)
+    alt лист надіслано
+      Mail -> Smtp : SMTP
+      Svc -> DB : INSERT reminder_logs (deadline_id, user_id) (R2)
+    else помилка SMTP
+      Svc -> Svc : записати в журнал,\nпродовжити з наступною парою (R3)
+    end
+  end
+end
+Svc --> Cron : {sent, failed}
+
+note over Svc, DB
+  Повторний запуск не надсилає дублікатів:
+  пари з записом у reminder_logs пропускаються
+end note
+@enduml

@@ -1,0 +1,53 @@
+' Shared look of StudyFlow diagrams (included by every *.puml).
+skinparam defaultFontName "DejaVu Sans"
+skinparam defaultFontSize 13
+skinparam shadowing false
+skinparam roundCorner 8
+skinparam dpi 150
+skinparam ArrowColor #2132A8
+skinparam ArrowFontColor #1D2333
+skinparam BackgroundColor #FFFFFF
+skinparam NoteBackgroundColor #FFF8E7
+skinparam NoteBorderColor #E2C26B
+
+skinparam class {
+  BackgroundColor #FFFFFF
+  BorderColor #2132A8
+  HeaderBackgroundColor #ECEFFB
+  AttributeFontColor #1D2333
+}
+skinparam usecase {
+  BackgroundColor #ECEFFB
+  BorderColor #2132A8
+}
+skinparam actor {
+  BorderColor #2132A8
+  BackgroundColor #FFFFFF
+}
+skinparam component {
+  BackgroundColor #ECEFFB
+  BorderColor #2132A8
+}
+skinparam node {
+  BackgroundColor #F6F7FB
+  BorderColor #5D6579
+}
+skinparam database {
+  BackgroundColor #FFFFFF
+  BorderColor #2132A8
+}
+skinparam state {
+  BackgroundColor #ECEFFB
+  BorderColor #2132A8
+}
+skinparam sequence {
+  ParticipantBackgroundColor #ECEFFB
+  ParticipantBorderColor #2132A8
+  LifeLineBorderColor #8A93A8
+  GroupBorderColor #8A93A8
+  GroupBackgroundColor #F6F7FB
+}
+skinparam entity {
+  BackgroundColor #FFFFFF
+  BorderColor #2132A8
+}
