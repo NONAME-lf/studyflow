@@ -739,7 +739,7 @@ export interface components {
              */
             dueAt: string;
             /** @default MEDIUM */
-            priority: components["schemas"]["Priority"];
+            priority?: components["schemas"]["Priority"];
             /**
              * Format: uuid
              * @description Груповий дедлайн — предмет цієї групи; особистий — предмет будь-якої групи автора
@@ -756,7 +756,7 @@ export interface components {
              */
             dueAt?: string;
             /** @default MEDIUM */
-            priority: components["schemas"]["Priority"];
+            priority?: components["schemas"]["Priority"];
             /**
              * Format: uuid
              * @description Груповий дедлайн — предмет цієї групи; особистий — предмет будь-якої групи автора
@@ -809,7 +809,7 @@ export interface components {
             title: string;
             description?: string | null;
             /** @default TODO */
-            status: components["schemas"]["TaskStatus"];
+            status?: components["schemas"]["TaskStatus"];
             /**
              * Format: uuid
              * @description Учасник групи
@@ -826,7 +826,7 @@ export interface components {
             title?: string;
             description?: string | null;
             /** @default TODO */
-            status: components["schemas"]["TaskStatus"];
+            status?: components["schemas"]["TaskStatus"];
             /**
              * Format: uuid
              * @description Учасник групи

@@ -1,0 +1,23 @@
+/** Ukrainian plural: pluralUk(5, ['учасник', 'учасники', 'учасників']) → «5 учасників». */
+export function pluralUk(n: number, [one, few, many]: [string, string, string]): string {
+  const mod10 = n % 10;
+  const mod100 = n % 100;
+  const word =
+    mod10 === 1 && mod100 !== 11
+      ? one
+      : mod10 >= 2 && mod10 <= 4 && (mod100 < 12 || mod100 > 14)
+        ? few
+        : many;
+  return `${n} ${word}`;
+}
+
+export const membersLabel = (n: number) => pluralUk(n, ['учасник', 'учасники', 'учасників']);
+
+export function initials(fullName: string): string {
+  return fullName
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((part) => part[0]?.toUpperCase())
+    .join('');
+}

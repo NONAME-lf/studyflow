@@ -7,9 +7,8 @@ const apiUrl = process.env.API_URL ?? 'http://localhost:3001';
 
 const nextConfig: NextConfig = {
   output: 'standalone',
+  devIndicators: false,
   outputFileTracingRoot: path.join(__dirname, '../..'),
-  cacheComponents: true,
-  partialPrefetching: true,
   turbopack: {
     rules: {
       '*.css': {
