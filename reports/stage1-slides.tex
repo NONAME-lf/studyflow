@@ -1,0 +1,195 @@
+\documentclass[aspectratio=169,11pt]{beamer}
+\usetheme{metropolis}
+\usepackage{fontspec}
+\usepackage{polyglossia}
+\setmainlanguage{ukrainian}
+\setmainfont{DejaVuSans}[Extension=.ttf,UprightFont=*,BoldFont=*-Bold,ItalicFont=*-Oblique,BoldItalicFont=*-BoldOblique]
+\setsansfont{DejaVuSans}[Extension=.ttf,UprightFont=*,BoldFont=*-Bold,ItalicFont=*-Oblique,BoldItalicFont=*-BoldOblique]
+\usepackage{booktabs,tabularx,array,colortbl,xcolor}
+\definecolor{sgreen}{HTML}{E2F0D9}
+\definecolor{wred}{HTML}{FBE5D6}
+\definecolor{oblue}{HTML}{DEEBF7}
+\definecolor{tyellow}{HTML}{FFF2CC}
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+\setbeamerfont{frametitle}{size=\large}
+\setbeamertemplate{itemize items}{\textbullet}
+\setlength{\leftmargini}{1.2em}
+
+\newcommand{\swotslide}[5]{%
+\begin{frame}{#1 --- SWOT}
+\footnotesize
+\renewcommand{\arraystretch}{1.05}
+\begin{tabularx}{\textwidth}{|Y|Y|}
+\hline
+\cellcolor{sgreen}\textbf{S — сильні сторони} & \cellcolor{wred}\textbf{W — слабкі сторони}\\
+\hline
+\cellcolor{sgreen!40}\begin{itemize}#2\end{itemize} &
+\cellcolor{wred!40}\begin{itemize}#3\end{itemize}\\
+\hline
+\cellcolor{oblue}\textbf{O — можливості} & \cellcolor{tyellow}\textbf{T — загрози}\\
+\hline
+\cellcolor{oblue!40}\begin{itemize}#4\end{itemize} &
+\cellcolor{tyellow!40}\begin{itemize}#5\end{itemize}\\
+\hline
+\end{tabularx}
+\end{frame}}
+
+\title{Вибір та обґрунтування теми командного проєкту}
+\subtitle{Інформаційні технології, Модуль 2 — Етап 1}
+\author{Петров Богдан \and Мекшаков Артемій}
+\institute{Група МІ-41}
+\date{21 жовтня 2026}
+
+\begin{document}
+\maketitle
+
+\begin{frame}{Команда та обмеження}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\textbf{Команда}
+\begin{itemize}
+  \item Петров Богдан — Team Lead, Backend (NestJS), БД
+  \item Мекшаков Артемій — Product Owner, Frontend (Next.js), QA
+\end{itemize}
+\column{0.48\textwidth}
+\textbf{Критерії відбору тем}
+\begin{itemize}
+  \item реалістичний обсяг для 2 осіб до 18.11
+  \item стек: TypeScript, Next.js, NestJS, PostgreSQL
+  \item реальна потреба, доступна аудиторія
+  \item придатність до тестування та API-документування
+\end{itemize}
+\end{columns}
+\end{frame}
+
+\begin{frame}{Три варіанти теми}
+\begin{enumerate}
+  \item \textbf{StudyFlow} — планувальник навчальних дедлайнів для студентських груп
+  \item \textbf{SplitMate} — облік спільних витрат і розрахунок боргів
+  \item \textbf{QuickPoll} — миттєві опитування та голосування для занять
+\end{enumerate}
+\end{frame}
+
+\begin{frame}{Тема 1. StudyFlow}
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries}p{3cm} Y}
+Що & Спільний календар дедлайнів, лабораторних і командних задач групи\\[3pt]
+Для кого & Студенти, навчальні групи/підгрупи, старости\\[3pt]
+Проблема & Дедлайни розпорошені між Classroom, чатами й усними домовленостями; немає єдиної картини тижня\\[3pt]
+Можливості & Групи та ролі; предмети й дедлайни; канбан задач; календар; e-mail-нагадування; прогрес групи\\
+\end{tabularx}
+\end{frame}
+
+\swotslide{StudyFlow}{
+  \item команда = цільова аудиторія
+  \item простий CRUD + ролі + календар, ідеально для Next/Nest
+  \item чітка реляційна модель, легко тестувати
+}{
+  \item низька технологічна новизна
+  \item цінність залежить від ручного внесення даних
+  \item нагадування потребують фонових задач
+}{
+  \item інтеграція з Google Calendar / Classroom
+  \item пілот у власній групі МІ-41
+  \item масштабування на факультет
+}{
+  \item конкуренція з Notion, Google Calendar, Trello
+  \item ризик низького залучення
+  \item залежність від e-mail-сервісу
+}
+
+\begin{frame}{Тема 2. SplitMate}
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries}p{3cm} Y}
+Що & Облік спільних витрат і автоматичний розрахунок «хто кому винен»\\[3pt]
+Для кого & Студенти в гуртожитку, компанії в поїздках, співмешканці\\[3pt]
+Проблема & Розрахунки губляться в чатах, підрахунок балансу вручну трудомісткий і спричиняє конфлікти\\[3pt]
+Можливості & Групи; витрати з розподілом; баланси; мінімізація переказів; історія, експорт CSV\\
+\end{tabularx}
+\end{frame}
+
+\swotslide{SplitMate}{
+  \item формалізована бізнес-логіка, зручна для unit-тестів
+  \item мало сутностей, швидкий MVP
+  \item реальна побутова потреба
+}{
+  \item робота з грошима: точність, округлення
+  \item обмежений простір для UI
+  \item без мобільного застосунку менш зручний
+}{
+  \item валюти, розпізнавання чеків, банківські API
+  \item преміум-функції
+}{
+  \item зрілі конкуренти: Splitwise, Tricount
+  \item низька лояльність користувачів
+  \item довіра до фінансових даних
+}
+
+\begin{frame}{Тема 3. QuickPoll}
+\small
+\begin{tabularx}{\textwidth}{>{\bfseries}p{3cm} Y}
+Що & Швидкі опитування й голосування за кодом/QR з результатами в реальному часі\\[3pt]
+Для кого & Викладачі та студенти на заняттях, організатори заходів\\[3pt]
+Проблема & Потрібно швидко зібрати думку аудиторії без реєстрації та складних інструментів\\[3pt]
+Можливості & Типи питань; доступ за кодом; real-time результати (WebSocket); діаграми; експорт\\
+\end{tabularx}
+\end{frame}
+
+\swotslide{QuickPoll}{
+  \item ефектне live-демо
+  \item без реєстрації для учасників
+  \item корисний самим викладачам
+}{
+  \item WebSocket ускладнює архітектуру і тести
+  \item стабільність при багатьох підключеннях
+  \item анонімність — накрутка голосів
+}{
+  \item інтеграція з LMS, конференції
+  \item гейміфіковані вікторини
+}{
+  \item Mentimeter, Kahoot, Slido, Google Forms
+  \item ризик не стабілізувати real-time до дедлайну
+  \item низька потреба: є звичні інструменти
+}
+
+\begin{frame}{Зважене порівняння}
+\small
+\renewcommand{\arraystretch}{1.2}
+\begin{tabularx}{\textwidth}{Y c c c c}
+\toprule
+\textbf{Критерій} & \textbf{Вага} & \textbf{StudyFlow} & \textbf{SplitMate} & \textbf{QuickPoll}\\
+\midrule
+Реалізованість 2 особами до 18.11 & 0,30 & 5 & 5 & 3\\
+Відповідність вимогам курсу & 0,25 & 5 & 4 & 3\\
+Доступ до аудиторії & 0,20 & 5 & 4 & 3\\
+Потенціал розвитку & 0,15 & 4 & 3 & 4\\
+Конкурентне середовище (5 — слабке) & 0,10 & 3 & 2 & 1\\
+\midrule
+\textbf{Зважена оцінка} & & \textbf{4,65} & \textbf{3,95} & \textbf{2,95}\\
+\bottomrule
+\end{tabularx}
+\end{frame}
+
+\begin{frame}{Обраний варіант: StudyFlow}
+\begin{itemize}
+  \item \textbf{Реалізованість:} відомі патерни (auth, ролі, CRUD, календар), без ризикового real-time
+  \item \textbf{Вимоги курсу:} змістовна схема БД та UML, 20+ unit-тестів на бізнес-логіку, Swagger
+  \item \textbf{Аудиторія:} перевірка гіпотез на власній групі вже в семестрі
+  \item \textbf{Рівне навантаження:} однаково вагомі backend і frontend частини
+  \item \textbf{Загрози керовані:} вузька спеціалізація на навчальному процесі; ізольований модуль нагадувань
+\end{itemize}
+\vspace{4pt}
+SplitMate — резервна альтернатива; QuickPoll — відхилено.
+\end{frame}
+
+\begin{frame}{Наступні кроки (етап 2, до 27.10)}
+\begin{itemize}
+  \item Lean Canvas для StudyFlow
+  \item Карта продукту
+  \item Дошка проєкту на платформі управління (Trello / Jira)
+\end{itemize}
+\vfill
+\centering \large Дякуємо за увагу!
+\end{frame}
+
+\end{document}

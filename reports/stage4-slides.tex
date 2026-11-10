@@ -1,0 +1,90 @@
+% Демо-презентація етапу 4 — ШАБЛОН (структура з docs/stage4.md). Заповнити фактами.
+\documentclass[aspectratio=169,11pt]{beamer}
+\usetheme{metropolis}
+\usepackage{fontspec}
+\usepackage{polyglossia}
+\setmainlanguage{ukrainian}
+\setmainfont{DejaVuSans}[Extension=.ttf,UprightFont=*,BoldFont=*-Bold,ItalicFont=*-Oblique,BoldItalicFont=*-BoldOblique]
+\setsansfont{DejaVuSans}[Extension=.ttf,UprightFont=*,BoldFont=*-Bold,ItalicFont=*-Oblique,BoldItalicFont=*-BoldOblique]
+\usepackage{booktabs,tabularx,array,colortbl,xcolor}
+\definecolor{sgreen}{HTML}{E2F0D9}
+\definecolor{wred}{HTML}{FBE5D6}
+\definecolor{oblue}{HTML}{DEEBF7}
+\definecolor{tyellow}{HTML}{FFF2CC}
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+\setbeamerfont{frametitle}{size=\large}
+\setbeamertemplate{itemize items}{\textbullet}
+\setlength{\leftmargini}{1.2em}
+\graphicspath{{img/}{../docs/uml/out/}}
+\newcommand{\todo}[1]{\textcolor{red}{\textbf{[TODO: #1]}}}
+\newcommand{\img}[2][0.95\textwidth]{\IfFileExists{img/#2}{\includegraphics[width=#1,height=0.78\textheight,keepaspectratio]{#2}}{\IfFileExists{../docs/uml/out/#2}{\includegraphics[width=#1,height=0.78\textheight,keepaspectratio]{#2}}{\todo{#2}}}}
+
+\title{StudyFlow: реалізація прототипу}
+\subtitle{Інформаційні технології, Модуль 2 — Етап 4}
+\author{Петров Богдан \and Мекшаков Артемій}
+\institute{Група МІ-41}
+\date{\todo{дата захисту}}
+
+\begin{document}
+\maketitle
+
+\begin{frame}{StudyFlow}
+\todo{проблема → рішення в 3 пунктах; стек}
+\end{frame}
+
+\begin{frame}{План спринта: план vs факт}
+\todo{обсяг спринтів 1--3: SP план/факт, Done/перенесено; скріншот Notion}
+\end{frame}
+
+\begin{frame}{Архітектура}
+\centering\img{component.png}
+\end{frame}
+
+\begin{frame}{Модель даних}
+\centering\img{er.png}
+\end{frame}
+
+\begin{frame}{UML}
+\centering\img[0.48\textwidth]{use-case.png}\hfill\img[0.48\textwidth]{sequence-group-deadline.png}
+\end{frame}
+
+\begin{frame}{Демо поточної версії}
+\begin{enumerate}
+  \item Староста створює груповий дедлайн
+  \item Учасник бачить його в календарі й відмічає виконання
+  \item Прогрес групи оновлюється
+  \item Канбан: задача → «Готово»
+  \item Нагадування на e-mail (Mailpit)
+  \item Swagger
+\end{enumerate}
+\end{frame}
+
+\begin{frame}{Скріншоти}
+\centering\img[0.48\textwidth]{dashboard.png}\hfill\img[0.48\textwidth]{calendar-week.png}
+\end{frame}
+
+\begin{frame}{Скріншоти}
+\centering\img[0.48\textwidth]{group.png}\hfill\img[0.48\textwidth]{board.png}
+\end{frame}
+
+\begin{frame}{Модульні тести}
+\todo{N/N passed, coverage, приклади UT-xx}
+\end{frame}
+
+\begin{frame}{Інтеграційні та E2E-тести}
+\todo{таблиця результатів IT-xx, E2E-xx}
+\end{frame}
+
+\begin{frame}{API-документація}
+\centering\img[0.8\textwidth]{swagger.png}
+\end{frame}
+
+\begin{frame}{Рефлексія спринта}
+\todo{Успіхи / Неуспіхи / Причини / Дії --- лише факти}
+\end{frame}
+
+\begin{frame}{Наступні кроки до 01.12}
+\todo{деплой, US-24, US-28, перенесене, фінальний звіт}
+\end{frame}
+
+\end{document}

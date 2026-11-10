@@ -1,0 +1,73 @@
+% Спільна преамбула для звітів (XeLaTeX)
+\usepackage{fontspec}
+\usepackage{polyglossia}
+\setmainlanguage{ukrainian}
+\setotherlanguage{english}
+\setmainfont{DejaVuSerif}[Extension=.ttf,UprightFont=*,BoldFont=*-Bold,ItalicFont=*-Italic,BoldItalicFont=*-BoldItalic]
+\setsansfont{DejaVuSans}[Extension=.ttf,UprightFont=*,BoldFont=*-Bold,ItalicFont=*-Oblique,BoldItalicFont=*-BoldOblique]
+\setmonofont{DejaVuSansMono}[Extension=.ttf,UprightFont=*,BoldFont=*-Bold,ItalicFont=*-Oblique,BoldItalicFont=*-BoldOblique,Scale=0.9]
+\usepackage[a4paper,margin=2.2cm]{geometry}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage{tcolorbox}
+\usepackage{graphicx}
+\usepackage{setspace}
+\usepackage[hidelinks]{hyperref}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+\usepackage{multirow}
+\usepackage{colortbl}
+\setlength{\parskip}{4pt}
+\setlength{\parindent}{0pt}
+\onehalfspacing
+
+\definecolor{accent}{HTML}{1F4E79}
+\definecolor{sgreen}{HTML}{E2F0D9}
+\definecolor{wred}{HTML}{FBE5D6}
+\definecolor{oblue}{HTML}{DEEBF7}
+\definecolor{tyellow}{HTML}{FFF2CC}
+\definecolor{lightgray}{HTML}{F2F2F2}
+
+\titleformat{\section}{\large\bfseries\color{accent}}{\thesection}{0.6em}{}
+\titleformat{\subsection}{\normalsize\bfseries}{\thesubsection}{0.6em}{}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\small ІТ, Модуль 2 — командний проєкт}
+\rhead{\small Петров Б., Мекшаков А.}
+\cfoot{\thepage}
+\renewcommand{\headrulewidth}{0.3pt}
+
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+
+% Титульна сторінка
+\newcommand{\maketitlepage}[3]{%
+\begin{titlepage}
+\centering
+{\large Київський національний університет імені Тараса Шевченка\\[2pt]
+Факультет комп'ютерних наук та кібернетики\par}
+\vspace{3cm}
+{\large Дисципліна: \textbf{Інформаційні технології}\par}
+\vspace{0.5cm}
+{\large Модуль 2 — робота в команді\par}
+\vspace{2cm}
+{\LARGE\bfseries #1\par}
+\vspace{0.6cm}
+{\large #2\par}
+\vfill
+\begin{flushright}
+\begin{tabular}{l}
+\textbf{Виконали:} студенти 4 курсу, група МІ-41\\[4pt]
+Петров Богдан\\
+Мекшаков Артемій\\[10pt]
+\textbf{Спеціальність:} Комп'ютерні науки\\
+\end{tabular}
+\end{flushright}
+\vspace{1.5cm}
+{Київ — #3\par}
+\end{titlepage}
+}

@@ -1,0 +1,27 @@
+# Dependencies
+node_modules/
+
+# Environment
+.env
+.env.*
+!.env.example
+
+# Build output
+dist/
+.next/
+next-env.d.ts
+*.tsbuildinfo
+
+# Tests
+coverage/
+test-results/
+playwright-report/
+blob-report/
+
+# LaTeX build
+reports/build/
+
+# OS / tools
+.DS_Store
+*.log
+.claude/settings.local.json

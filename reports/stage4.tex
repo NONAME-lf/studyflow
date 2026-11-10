@@ -1,0 +1,91 @@
+% Звіт за етапом 4 — ШАБЛОН. Заповнити фактами (див. docs/stage4.md).
+% Червоні [TODO] у PDF = незаповнені місця. Перед здачею їх не має бути.
+\documentclass[12pt]{article}
+\input{preamble}
+\usepackage{longtable}
+\usepackage{pdflscape}
+\usepackage{float}
+\graphicspath{{img/}{../docs/uml/out/}}
+\newcommand{\todo}[1]{\textcolor{red}{\textbf{[TODO: #1]}}}
+% Вставка зображення або TODO, якщо файлу ще немає
+\newcommand{\fig}[3][0.9\textwidth]{%
+\begin{figure}[H]\centering
+\IfFileExists{img/#2}{\includegraphics[width=#1,height=0.7\textheight,keepaspectratio]{#2}}{%
+\IfFileExists{../docs/uml/out/#2}{\includegraphics[width=#1,height=0.7\textheight,keepaspectratio]{#2}}{%
+\fbox{\parbox{0.8\textwidth}{\centering\vspace{1.5cm}\todo{#2}\vspace{1.5cm}}}}}
+\caption{#3}\end{figure}}
+% Вставка згенерованої таблиці або TODO
+\newcommand{\gen}[1]{\IfFileExists{generated/#1}{\input{generated/#1}}{\todo{generated/#1 --- запустити pnpm test:report}}}
+
+\begin{document}
+\maketitlepage{Звіт за етапом 4}{Реалізація прототипу: UML і схема БД, архітектура, тестування, API-документація}{2026}
+
+\section{Мета етапу}
+Реалізувати прототип StudyFlow в обсязі спринтів 1--3 (етап 3), промоделювати систему в UML, обґрунтувати архітектуру та інструментарій, покрити код модульними та інтеграційними тестами, задокументувати API і провести рефлексію спринта.
+
+\section{План спринта і його виконання}
+\todo{таблиця план (етап 3) vs факт по ID беклогу: ID, назва, SP, статус (Done / перенесено у спринт 4); підсумок SP план/факт}
+
+\fig{notion-sprints.png}{Дошка спринтів у Notion}
+
+\section{Поточна версія системи}
+\todo{2--3 речення: що вміє система зараз}
+\fig{dashboard.png}{Дашборд: найближчі дедлайни}
+\fig{calendar-week.png}{Календар тижня}
+\fig{group.png}{Сторінка групи: групові дедлайни та прогрес}
+\fig{board.png}{Канбан командних задач}
+\fig{mailpit.png}{Лист-нагадування (Mailpit, середовище розробки)}
+
+\section{Архітектура системи та інструментарій}
+\subsection{Архітектура}
+\todo{модульний моноліт; шари Controller -- Service -- Prisma; модулі; same-origin через rewrites Next.js}
+\fig{component.png}{Діаграма компонентів}
+\fig{deployment.png}{Діаграма розгортання}
+
+\subsection{Обґрунтування інструментарію}
+\todo{таблиця: інструмент --- роль --- чому --- відкинута альтернатива (Next.js, NestJS, PostgreSQL, Prisma, JWT, Tailwind/shadcn, TanStack Query, Jest, supertest, Playwright, Docker Compose, GitHub Actions, Mailpit, PlantUML, Notion)}
+
+\section{UML-моделювання}
+\fig{use-case.png}{Діаграма варіантів використання}
+\fig{class.png}{Діаграма класів доменної моделі}
+\fig{sequence-group-deadline.png}{Послідовність: груповий дедлайн}
+\fig{sequence-reminders.png}{Послідовність: надсилання нагадувань}
+\fig{state.png}{Діаграма станів задачі / дедлайну}
+
+\section{Схема бази даних}
+\fig{er.png}{ER-діаграма бази даних}
+\todo{таблиця сутностей: таблиця --- призначення --- ключові поля --- зв'язки}
+
+\section{Модульні тести}
+\todo{підхід: Jest, що мокається; підсумок}
+\gen{summary.tex}
+\gen{coverage.tex}
+Повний журнал --- Додаток А.
+
+\section{Інтеграційні та E2E-тести}
+\todo{підхід: тестова БД studyflow\_test, stub пошти, Playwright}
+\gen{integration.tex}
+\gen{e2e.tex}
+
+\section{API-документація}
+\todo{Swagger UI на /api/docs, openapi.json у репозиторії; кількість ендпоінтів і тегів}
+\fig{swagger.png}{Swagger UI}
+Повний перелік ендпоінтів --- Додаток Б.
+
+\section{Рефлексія спринта}
+\todo{лише факти (git log, Notion, тести). Успіхи / Неуспіхи / Причини / Висновки і дії на спринт 4}
+
+\section{Висновки і наступні кроки}
+\todo{підсумок + етап 5: деплой (T-09), US-24, US-28, перенесене}
+
+\appendix
+\section{Журнал модульних тестів}
+\gen{unit.tex}
+
+\section{Перелік ендпоінтів API}
+\todo{таблиця: метод, шлях, доступ, опис, ID беклогу}
+
+\section{Інструкція запуску}
+\todo{docker compose up -d; pnpm install; pnpm db:reset; pnpm dev; демо-акаунти}
+
+\end{document}
