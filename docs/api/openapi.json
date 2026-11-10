@@ -835,6 +835,932 @@
         ]
       }
     },
+    "/api/groups/{groupId}/subjects": {
+      "get": {
+        "operationId": "SubjectsController_list",
+        "parameters": [
+          {
+            "name": "groupId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/SubjectDto"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Немає access-токена",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Не учасник групи",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Предмети групи",
+        "tags": [
+          "subjects"
+        ]
+      },
+      "post": {
+        "description": "Лише староста.",
+        "operationId": "SubjectsController_create",
+        "parameters": [
+          {
+            "name": "groupId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateSubjectDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubjectDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Невалідні дані",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Немає access-токена",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Не учасник групи або не староста",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Предмет з такою назвою вже є",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Додати предмет",
+        "tags": [
+          "subjects"
+        ]
+      }
+    },
+    "/api/groups/{groupId}/subjects/{subjectId}": {
+      "patch": {
+        "description": "Лише староста.",
+        "operationId": "SubjectsController_update",
+        "parameters": [
+          {
+            "name": "groupId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          },
+          {
+            "name": "subjectId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateSubjectDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubjectDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Немає access-токена",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Не учасник групи або не староста",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Предмет не знайдено",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Предмет з такою назвою вже є",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Змінити предмет",
+        "tags": [
+          "subjects"
+        ]
+      },
+      "delete": {
+        "description": "Лише староста. Дедлайни предмета залишаються без предмета.",
+        "operationId": "SubjectsController_remove",
+        "parameters": [
+          {
+            "name": "groupId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          },
+          {
+            "name": "subjectId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Предмет видалено"
+          },
+          "401": {
+            "description": "Немає access-токена",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Не учасник групи або не староста",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Предмет не знайдено",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Видалити предмет",
+        "tags": [
+          "subjects"
+        ]
+      }
+    },
+    "/api/deadlines": {
+      "get": {
+        "description": "Особисті дедлайни користувача й дедлайни його груп, від найближчого. Статус (pending / done / overdue) — для поточного користувача.",
+        "operationId": "DeadlinesController_list",
+        "parameters": [
+          {
+            "name": "from",
+            "required": false,
+            "in": "query",
+            "description": "dueAt ≥ from",
+            "schema": {
+              "format": "date-time",
+              "type": "string"
+            }
+          },
+          {
+            "name": "to",
+            "required": false,
+            "in": "query",
+            "description": "dueAt ≤ to",
+            "schema": {
+              "format": "date-time",
+              "type": "string"
+            }
+          },
+          {
+            "name": "groupId",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          },
+          {
+            "name": "subjectId",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "$ref": "#/components/schemas/DeadlineStatus"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/DeadlineDto"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Невалідні фільтри",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Немає access-токена",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Видимі дедлайни",
+        "tags": [
+          "deadlines"
+        ]
+      },
+      "post": {
+        "description": "Бачить лише автор.",
+        "operationId": "DeadlinesController_createPersonal",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateDeadlineDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeadlineDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Невалідні дані або предмет",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Немає access-токена",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Створити особистий дедлайн",
+        "tags": [
+          "deadlines"
+        ]
+      }
+    },
+    "/api/groups/{groupId}/deadlines": {
+      "post": {
+        "description": "Лише староста. Дедлайн одразу бачать усі учасники групи.",
+        "operationId": "DeadlinesController_createForGroup",
+        "parameters": [
+          {
+            "name": "groupId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateDeadlineDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeadlineDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Невалідні дані або предмет іншої групи",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Немає access-токена",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Не учасник групи або не староста",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Створити груповий дедлайн",
+        "tags": [
+          "deadlines"
+        ]
+      }
+    },
+    "/api/deadlines/{id}": {
+      "get": {
+        "operationId": "DeadlinesController_getOne",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeadlineDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Немає access-токена",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Дедлайн не знайдено або не видимий",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Деталі дедлайну",
+        "tags": [
+          "deadlines"
+        ]
+      },
+      "patch": {
+        "description": "Особистий — автор, груповий — староста групи.",
+        "operationId": "DeadlinesController_update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateDeadlineDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeadlineDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Невалідні дані або предмет",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Немає access-токена",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Груповий дедлайн, не староста",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Дедлайн не знайдено або не видимий",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Змінити дедлайн",
+        "tags": [
+          "deadlines"
+        ]
+      },
+      "delete": {
+        "description": "Особистий — автор, груповий — староста групи.",
+        "operationId": "DeadlinesController_remove",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Дедлайн видалено"
+          },
+          "401": {
+            "description": "Немає access-токена",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Груповий дедлайн, не староста",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Дедлайн не знайдено або не видимий",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Видалити дедлайн",
+        "tags": [
+          "deadlines"
+        ]
+      }
+    },
+    "/api/deadlines/{id}/completion": {
+      "put": {
+        "description": "Особиста відмітка поточного користувача. Повторний виклик не змінює стан.",
+        "operationId": "DeadlinesController_complete",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeadlineDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Немає access-токена",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Дедлайн не знайдено або не видимий",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Відмітити виконаним",
+        "tags": [
+          "deadlines"
+        ]
+      },
+      "delete": {
+        "operationId": "DeadlinesController_uncomplete",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeadlineDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Немає access-токена",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Дедлайн не знайдено або не видимий",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Зняти відмітку виконання",
+        "tags": [
+          "deadlines"
+        ]
+      }
+    },
+    "/api/deadlines/{id}/progress": {
+      "get": {
+        "description": "Скільки учасників групи відмітили виконання, у відсотках.",
+        "operationId": "DeadlinesController_progress",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProgressDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Особистий дедлайн",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Немає access-токена",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Дедлайн не знайдено або не видимий",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Прогрес групи по дедлайну",
+        "tags": [
+          "deadlines"
+        ]
+      }
+    },
     "/api/health": {
       "get": {
         "operationId": "HealthController_check",
@@ -879,6 +1805,14 @@
     {
       "name": "groups",
       "description": "Групи, учасники, ролі, коди запрошення"
+    },
+    {
+      "name": "subjects",
+      "description": "Предмети групи"
+    },
+    {
+      "name": "deadlines",
+      "description": "Особисті й групові дедлайни, відмітка виконання, прогрес"
     },
     {
       "name": "health",
@@ -1196,6 +2130,347 @@
         "required": [
           "role"
         ]
+      },
+      "SubjectDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "groupId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string",
+            "example": "Інформаційні технології"
+          },
+          "teacher": {
+            "type": "string",
+            "nullable": true,
+            "example": "Мокрієв М."
+          },
+          "color": {
+            "type": "string",
+            "example": "#3B82F6"
+          }
+        },
+        "required": [
+          "id",
+          "groupId",
+          "name",
+          "teacher",
+          "color"
+        ]
+      },
+      "CreateSubjectDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Бази даних",
+            "maxLength": 100
+          },
+          "teacher": {
+            "type": "string",
+            "nullable": true,
+            "example": "Іваненко І. І.",
+            "maxLength": 100
+          },
+          "color": {
+            "type": "string",
+            "example": "#8B5CF6",
+            "description": "Колір у форматі #RRGGBB"
+          }
+        },
+        "required": [
+          "name"
+        ]
+      },
+      "UpdateSubjectDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Бази даних",
+            "maxLength": 100
+          },
+          "teacher": {
+            "type": "string",
+            "nullable": true,
+            "example": "Іваненко І. І.",
+            "maxLength": 100
+          },
+          "color": {
+            "type": "string",
+            "example": "#8B5CF6",
+            "description": "Колір у форматі #RRGGBB"
+          }
+        }
+      },
+      "DeadlineStatus": {
+        "type": "string",
+        "enum": [
+          "pending",
+          "done",
+          "overdue"
+        ]
+      },
+      "Priority": {
+        "type": "string",
+        "enum": [
+          "LOW",
+          "MEDIUM",
+          "HIGH"
+        ]
+      },
+      "SubjectRefDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string",
+            "example": "Прикладні алгоритми"
+          },
+          "color": {
+            "type": "string",
+            "example": "#10B981"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "color"
+        ]
+      },
+      "OwnerRefDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "fullName": {
+            "type": "string",
+            "example": "Петров Богдан"
+          }
+        },
+        "required": [
+          "id",
+          "fullName"
+        ]
+      },
+      "ProgressDto": {
+        "type": "object",
+        "properties": {
+          "total": {
+            "type": "number",
+            "example": 4,
+            "description": "Учасників групи"
+          },
+          "completed": {
+            "type": "number",
+            "example": 2,
+            "description": "Із них відмітили виконання"
+          },
+          "percent": {
+            "type": "number",
+            "example": 50,
+            "description": "Ціле число відсотків"
+          }
+        },
+        "required": [
+          "total",
+          "completed",
+          "percent"
+        ]
+      },
+      "DeadlineDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "title": {
+            "type": "string",
+            "example": "ЛР 5: динамічне програмування"
+          },
+          "description": {
+            "type": "string",
+            "nullable": true,
+            "example": "Здати звіт і код у Classroom"
+          },
+          "dueAt": {
+            "format": "date-time",
+            "type": "string",
+            "example": "2026-11-15T20:59:00.000Z"
+          },
+          "priority": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Priority"
+              }
+            ]
+          },
+          "groupId": {
+            "type": "string",
+            "nullable": true,
+            "format": "uuid",
+            "description": "null — особистий"
+          },
+          "groupName": {
+            "type": "string",
+            "nullable": true,
+            "example": "МІ-41"
+          },
+          "subject": {
+            "nullable": true,
+            "type": "object",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/SubjectRefDto"
+              }
+            ]
+          },
+          "owner": {
+            "description": "Автор",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/OwnerRefDto"
+              }
+            ]
+          },
+          "status": {
+            "description": "Статус для поточного користувача",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/DeadlineStatus"
+              }
+            ]
+          },
+          "completedAt": {
+            "format": "date-time",
+            "type": "string",
+            "nullable": true,
+            "description": "Коли поточний користувач відмітив"
+          },
+          "progress": {
+            "nullable": true,
+            "description": "Лише для групових",
+            "type": "object",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ProgressDto"
+              }
+            ]
+          },
+          "canEdit": {
+            "type": "boolean",
+            "description": "Чи може поточний користувач змінювати й видаляти"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "description",
+          "dueAt",
+          "priority",
+          "groupId",
+          "groupName",
+          "subject",
+          "owner",
+          "status",
+          "completedAt",
+          "progress",
+          "canEdit",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "CreateDeadlineDto": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "example": "ЛР 5: динамічне програмування",
+            "maxLength": 200
+          },
+          "description": {
+            "type": "string",
+            "nullable": true,
+            "maxLength": 2000
+          },
+          "dueAt": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-11-15T20:59:00.000Z"
+          },
+          "priority": {
+            "default": "MEDIUM",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Priority"
+              }
+            ]
+          },
+          "subjectId": {
+            "type": "string",
+            "nullable": true,
+            "format": "uuid",
+            "description": "Груповий дедлайн — предмет цієї групи; особистий — предмет будь-якої групи автора"
+          }
+        },
+        "required": [
+          "title",
+          "dueAt"
+        ]
+      },
+      "UpdateDeadlineDto": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "example": "ЛР 5: динамічне програмування",
+            "maxLength": 200
+          },
+          "description": {
+            "type": "string",
+            "nullable": true,
+            "maxLength": 2000
+          },
+          "dueAt": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-11-15T20:59:00.000Z"
+          },
+          "priority": {
+            "default": "MEDIUM",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Priority"
+              }
+            ]
+          },
+          "subjectId": {
+            "type": "string",
+            "nullable": true,
+            "format": "uuid",
+            "description": "Груповий дедлайн — предмет цієї групи; особистий — предмет будь-якої групи автора"
+          }
+        }
       },
       "HealthDto": {
         "type": "object",

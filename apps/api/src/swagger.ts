@@ -17,6 +17,8 @@ export function buildOpenApiDocument(app: INestApplication): OpenAPIObject {
     .addTag('auth', 'Реєстрація, вхід, токени')
     .addTag('users', 'Профіль поточного користувача')
     .addTag('groups', 'Групи, учасники, ролі, коди запрошення')
+    .addTag('subjects', 'Предмети групи')
+    .addTag('deadlines', 'Особисті й групові дедлайни, відмітка виконання, прогрес')
     .addTag('health', 'Стан сервісу')
     .build();
 

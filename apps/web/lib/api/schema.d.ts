@@ -263,6 +263,161 @@ export interface paths {
         patch: operations["GroupsController_changeRole"];
         trace?: never;
     };
+    "/api/groups/{groupId}/subjects": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Предмети групи */
+        get: operations["SubjectsController_list"];
+        put?: never;
+        /**
+         * Додати предмет
+         * @description Лише староста.
+         */
+        post: operations["SubjectsController_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/groups/{groupId}/subjects/{subjectId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /**
+         * Видалити предмет
+         * @description Лише староста. Дедлайни предмета залишаються без предмета.
+         */
+        delete: operations["SubjectsController_remove"];
+        options?: never;
+        head?: never;
+        /**
+         * Змінити предмет
+         * @description Лише староста.
+         */
+        patch: operations["SubjectsController_update"];
+        trace?: never;
+    };
+    "/api/deadlines": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Видимі дедлайни
+         * @description Особисті дедлайни користувача й дедлайни його груп, від найближчого. Статус (pending / done / overdue) — для поточного користувача.
+         */
+        get: operations["DeadlinesController_list"];
+        put?: never;
+        /**
+         * Створити особистий дедлайн
+         * @description Бачить лише автор.
+         */
+        post: operations["DeadlinesController_createPersonal"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/groups/{groupId}/deadlines": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Створити груповий дедлайн
+         * @description Лише староста. Дедлайн одразу бачать усі учасники групи.
+         */
+        post: operations["DeadlinesController_createForGroup"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/deadlines/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Деталі дедлайну */
+        get: operations["DeadlinesController_getOne"];
+        put?: never;
+        post?: never;
+        /**
+         * Видалити дедлайн
+         * @description Особистий — автор, груповий — староста групи.
+         */
+        delete: operations["DeadlinesController_remove"];
+        options?: never;
+        head?: never;
+        /**
+         * Змінити дедлайн
+         * @description Особистий — автор, груповий — староста групи.
+         */
+        patch: operations["DeadlinesController_update"];
+        trace?: never;
+    };
+    "/api/deadlines/{id}/completion": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Відмітити виконаним
+         * @description Особиста відмітка поточного користувача. Повторний виклик не змінює стан.
+         */
+        put: operations["DeadlinesController_complete"];
+        post?: never;
+        /** Зняти відмітку виконання */
+        delete: operations["DeadlinesController_uncomplete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/deadlines/{id}/progress": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Прогрес групи по дедлайну
+         * @description Скільки учасників групи відмітили виконання, у відсотках.
+         */
+        get: operations["DeadlinesController_progress"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/health": {
         parameters: {
             query?: never;
@@ -397,6 +552,148 @@ export interface components {
         UpdateMemberRoleDto: {
             /** @example HEADMAN */
             role: components["schemas"]["GroupRole"];
+        };
+        SubjectDto: {
+            /** Format: uuid */
+            id: string;
+            /** Format: uuid */
+            groupId: string;
+            /** @example Інформаційні технології */
+            name: string;
+            /** @example Мокрієв М. */
+            teacher: string | null;
+            /** @example #3B82F6 */
+            color: string;
+        };
+        CreateSubjectDto: {
+            /** @example Бази даних */
+            name: string;
+            /** @example Іваненко І. І. */
+            teacher?: string | null;
+            /**
+             * @description Колір у форматі #RRGGBB
+             * @example #8B5CF6
+             */
+            color?: string;
+        };
+        UpdateSubjectDto: {
+            /** @example Бази даних */
+            name?: string;
+            /** @example Іваненко І. І. */
+            teacher?: string | null;
+            /**
+             * @description Колір у форматі #RRGGBB
+             * @example #8B5CF6
+             */
+            color?: string;
+        };
+        /** @enum {string} */
+        DeadlineStatus: "pending" | "done" | "overdue";
+        /** @enum {string} */
+        Priority: "LOW" | "MEDIUM" | "HIGH";
+        SubjectRefDto: {
+            /** Format: uuid */
+            id: string;
+            /** @example Прикладні алгоритми */
+            name: string;
+            /** @example #10B981 */
+            color: string;
+        };
+        OwnerRefDto: {
+            /** Format: uuid */
+            id: string;
+            /** @example Петров Богдан */
+            fullName: string;
+        };
+        ProgressDto: {
+            /**
+             * @description Учасників групи
+             * @example 4
+             */
+            total: number;
+            /**
+             * @description Із них відмітили виконання
+             * @example 2
+             */
+            completed: number;
+            /**
+             * @description Ціле число відсотків
+             * @example 50
+             */
+            percent: number;
+        };
+        DeadlineDto: {
+            /** Format: uuid */
+            id: string;
+            /** @example ЛР 5: динамічне програмування */
+            title: string;
+            /** @example Здати звіт і код у Classroom */
+            description: string | null;
+            /**
+             * Format: date-time
+             * @example 2026-11-15T20:59:00.000Z
+             */
+            dueAt: string;
+            priority: components["schemas"]["Priority"];
+            /**
+             * Format: uuid
+             * @description null — особистий
+             */
+            groupId: string | null;
+            /** @example МІ-41 */
+            groupName: string | null;
+            subject: components["schemas"]["SubjectRefDto"] | null;
+            /** @description Автор */
+            owner: components["schemas"]["OwnerRefDto"];
+            /** @description Статус для поточного користувача */
+            status: components["schemas"]["DeadlineStatus"];
+            /**
+             * Format: date-time
+             * @description Коли поточний користувач відмітив
+             */
+            completedAt: string | null;
+            /** @description Лише для групових */
+            progress: components["schemas"]["ProgressDto"] | null;
+            /** @description Чи може поточний користувач змінювати й видаляти */
+            canEdit: boolean;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+        };
+        CreateDeadlineDto: {
+            /** @example ЛР 5: динамічне програмування */
+            title: string;
+            description?: string | null;
+            /**
+             * Format: date-time
+             * @example 2026-11-15T20:59:00.000Z
+             */
+            dueAt: string;
+            /** @default MEDIUM */
+            priority: components["schemas"]["Priority"];
+            /**
+             * Format: uuid
+             * @description Груповий дедлайн — предмет цієї групи; особистий — предмет будь-якої групи автора
+             */
+            subjectId?: string | null;
+        };
+        UpdateDeadlineDto: {
+            /** @example ЛР 5: динамічне програмування */
+            title?: string;
+            description?: string | null;
+            /**
+             * Format: date-time
+             * @example 2026-11-15T20:59:00.000Z
+             */
+            dueAt?: string;
+            /** @default MEDIUM */
+            priority: components["schemas"]["Priority"];
+            /**
+             * Format: uuid
+             * @description Груповий дедлайн — предмет цієї групи; особистий — предмет будь-якої групи автора
+             */
+            subjectId?: string | null;
         };
         HealthDto: {
             /**
@@ -1012,6 +1309,627 @@ export interface operations {
                 };
             };
             /** @description Учасника не знайдено */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    SubjectsController_list: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                groupId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SubjectDto"][];
+                };
+            };
+            /** @description Немає access-токена */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Не учасник групи */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    SubjectsController_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                groupId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateSubjectDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SubjectDto"];
+                };
+            };
+            /** @description Невалідні дані */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Немає access-токена */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Не учасник групи або не староста */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Предмет з такою назвою вже є */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    SubjectsController_remove: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                groupId: string;
+                subjectId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Предмет видалено */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Немає access-токена */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Не учасник групи або не староста */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Предмет не знайдено */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    SubjectsController_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                groupId: string;
+                subjectId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateSubjectDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SubjectDto"];
+                };
+            };
+            /** @description Немає access-токена */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Не учасник групи або не староста */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Предмет не знайдено */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Предмет з такою назвою вже є */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    DeadlinesController_list: {
+        parameters: {
+            query?: {
+                /** @description dueAt ≥ from */
+                from?: string;
+                /** @description dueAt ≤ to */
+                to?: string;
+                groupId?: string;
+                subjectId?: string;
+                status?: components["schemas"]["DeadlineStatus"];
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DeadlineDto"][];
+                };
+            };
+            /** @description Невалідні фільтри */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Немає access-токена */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    DeadlinesController_createPersonal: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateDeadlineDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DeadlineDto"];
+                };
+            };
+            /** @description Невалідні дані або предмет */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Немає access-токена */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    DeadlinesController_createForGroup: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                groupId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateDeadlineDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DeadlineDto"];
+                };
+            };
+            /** @description Невалідні дані або предмет іншої групи */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Немає access-токена */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Не учасник групи або не староста */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    DeadlinesController_getOne: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DeadlineDto"];
+                };
+            };
+            /** @description Немає access-токена */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Дедлайн не знайдено або не видимий */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    DeadlinesController_remove: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Дедлайн видалено */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Немає access-токена */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Груповий дедлайн, не староста */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Дедлайн не знайдено або не видимий */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    DeadlinesController_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateDeadlineDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DeadlineDto"];
+                };
+            };
+            /** @description Невалідні дані або предмет */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Немає access-токена */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Груповий дедлайн, не староста */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Дедлайн не знайдено або не видимий */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    DeadlinesController_complete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DeadlineDto"];
+                };
+            };
+            /** @description Немає access-токена */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Дедлайн не знайдено або не видимий */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    DeadlinesController_uncomplete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DeadlineDto"];
+                };
+            };
+            /** @description Немає access-токена */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Дедлайн не знайдено або не видимий */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    DeadlinesController_progress: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProgressDto"];
+                };
+            };
+            /** @description Особистий дедлайн */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Немає access-токена */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Дедлайн не знайдено або не видимий */
             404: {
                 headers: {
                     [name: string]: unknown;
