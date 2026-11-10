@@ -55,7 +55,7 @@ model Deadline {
   priority    Priority @default(MEDIUM)
   ownerId     String            // автор
   groupId     String?           // null = особистий дедлайн
-  subjectId   String?           // лише для групових (предмет належить групі)
+  subjectId   String?           // груповий: предмет цієї групи; особистий: предмет групи автора (US-11)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   @@index([groupId, dueAt])
@@ -111,7 +111,7 @@ model ReminderLog {                 // ідемпотентність нагад
 **Дедлайни**
 - D1. Особистий (`groupId = null`) бачить і редагує лише автор.
 - D2. Груповий створює/редагує/видаляє лише `HEADMAN` групи; бачать усі учасники.
-- D3. `subjectId` має належати тій самій групі → інакше `400`.
+- D3. `subjectId` групового дедлайну — предмет тієї самої групи; особистого — предмет будь-якої групи, де автор є учасником (US-11, погоджено 10.11). Інакше `400`.
 - D4. Статус для конкретного користувача обчислюється: `done` (є completion), `overdue` (не done і `dueAt < now`), `pending`.
 - D5. Список: лише видимі користувачу (особисті + груп, де він учасник); фільтри `from`, `to`, `groupId`, `subjectId`, `status`; сортування `dueAt ASC`.
 - D6. Відмітка виконання ідемпотентна (повторна — без помилки); для невидимого дедлайну → `404`.
@@ -199,7 +199,7 @@ model ReminderLog {                 // ідемпотентність нагад
 
 ## 6. Конфігурація
 
-`.env.example` (у корені й/або в `apps/api`):
+`apps/api/.env.example` (копіюється в `apps/api/.env`):
 
 ```
 DATABASE_URL=postgresql://studyflow:studyflow@localhost:5433/studyflow
@@ -216,4 +216,4 @@ APP_URL=http://localhost:3000
 API_PORT=3001
 ```
 
-`docker-compose.yml`: `postgres:16` (5433:5432, volume, init-скрипт створює `studyflow_test`), `axllent/mailpit` (1025, 8025).
+`docker-compose.yml`: `postgres:16` (5433:5432, volume, init-скрипт створює `studyflow_test`), `axllent/mailpit` (1025, 8025); профіль `full` — `api` і `web` з Dockerfile (T-02).

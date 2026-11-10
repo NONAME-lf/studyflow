@@ -45,7 +45,7 @@
 
 ## Тест-план (цільовий; ID використовувати у звіті)
 
-**Модульні (Jest, Prisma замокано)** — ціль 30+:
+**Модульні (Vitest, Prisma замокано)** — ціль 30+:
 
 | ID | Модуль | Що перевіряє | Правило |
 |---|---|---|---|
@@ -83,8 +83,10 @@
 | UT-32 | RemindersService | пропускає виконані та reminderEnabled = false | R1 |
 | UT-33 | RemindersService | не шле повторно (є ReminderLog) | R2 |
 | UT-34 | RemindersService | помилка одного листа не зупиняє інші | R3 |
+| UT-35 | HealthService | БД відповідає → `status: ok` | — |
+| UT-36 | HealthService | БД недоступна → 503 | — |
 
-**Інтеграційні (Jest + supertest, справжня БД `studyflow_test`, пошта — stub)** — ціль ≥ 10:
+**Інтеграційні (Vitest + supertest, справжня БД `studyflow_test`, пошта — stub)** — ціль ≥ 10:
 
 | ID | Сценарій |
 |---|---|
@@ -110,7 +112,7 @@
 | E2E-02 | вхід з невірним паролем → повідомлення про помилку |
 | E2E-03 | календар тижня показує дедлайн у правильний день |
 
-**Журнали:** `pnpm test:report` запускає unit та integration з `--json --outputFile=reports/data/*.json` і `--coverage` (`coverage-summary.json`), Playwright з JSON-репортером → скрипт `scripts/test-report` генерує `reports/generated/{unit,integration,e2e,coverage,summary}.tex` (longtable-рядки: ID, назва, модуль, статус, мс; підсумок: пройдено/усього, час, дата прогону, коміт). Назви тестів починати з ID (`it('UT-05 wrong password → 401', ...)`), щоб скрипт їх витягав.
+**Журнали:** `pnpm test:report` запускає unit та integration (Vitest) з `--reporter=json --outputFile=reports/data/*.json` і `--coverage` (`coverage-summary.json`), Playwright з JSON-репортером → скрипт `scripts/test-report` генерує `reports/generated/{unit,integration,e2e,coverage,summary}.tex` (longtable-рядки: ID, назва, модуль, статус, мс; підсумок: пройдено/усього, час, дата прогону, коміт). Назви тестів починати з ID (`it('UT-05 wrong password → 401', ...)`), щоб скрипт їх витягав.
 
 ## Звіт `reports/stage4.tex` (структура)
 

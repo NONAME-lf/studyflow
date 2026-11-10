@@ -1,0 +1,84 @@
+{
+  "openapi": "3.0.0",
+  "paths": {
+    "/api/health": {
+      "get": {
+        "operationId": "HealthController_check",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Сервіс і база даних працюють",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HealthDto"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "База даних недоступна"
+          }
+        },
+        "summary": "Стан API та підключення до бази даних",
+        "tags": [
+          "health"
+        ]
+      }
+    }
+  },
+  "info": {
+    "title": "StudyFlow API",
+    "description": "REST API планувальника навчальних дедлайнів для студентських груп. Захищені ендпоінти потребують access-токена (Authorize → Bearer).",
+    "version": "0.1.0",
+    "contact": {}
+  },
+  "tags": [
+    {
+      "name": "health",
+      "description": "Стан сервісу"
+    }
+  ],
+  "servers": [],
+  "components": {
+    "securitySchemes": {
+      "bearer": {
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "type": "http"
+      }
+    },
+    "schemas": {
+      "HealthDto": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "ok",
+              "error"
+            ],
+            "example": "ok"
+          },
+          "database": {
+            "type": "string",
+            "enum": [
+              "up",
+              "down"
+            ],
+            "example": "up"
+          },
+          "timestamp": {
+            "type": "string",
+            "example": "2026-11-10T18:00:00.000Z"
+          }
+        },
+        "required": [
+          "status",
+          "database",
+          "timestamp"
+        ]
+      }
+    }
+  }
+}

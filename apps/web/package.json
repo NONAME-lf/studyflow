@@ -1,0 +1,29 @@
+{
+  "name": "@studyflow/web",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev --port 3000",
+    "build": "next build",
+    "start": "next start --port 3000",
+    "lint": "eslint .",
+    "typecheck": "next typegen && tsc --noEmit",
+    "openapi:types": "openapi-typescript ../../docs/api/openapi.json --output lib/api/schema.d.ts"
+  },
+  "dependencies": {
+    "next": "16.4.6",
+    "react": "19.3.0",
+    "react-dom": "19.3.0"
+  },
+  "devDependencies": {
+    "@tailwindcss/turbopack": "4.3.3",
+    "@types/node": "^24.19.2",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9.39.5",
+    "eslint-config-next": "16.4.6",
+    "openapi-typescript": "^7.13.0",
+    "tailwindcss": "4.3.3",
+    "typescript": "~6.0.3"
+  }
+}

@@ -1,0 +1,48 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  ci:
+    name: Lint, typecheck, test, build
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: studyflow
+          POSTGRES_PASSWORD: studyflow
+          POSTGRES_DB: studyflow_test
+        ports:
+          - 5433:5432
+        options: >-
+          --health-cmd "pg_isready -U studyflow -d studyflow_test"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      DATABASE_URL: postgresql://studyflow:studyflow@localhost:5433/studyflow_test
+      DATABASE_URL_TEST: postgresql://studyflow:studyflow@localhost:5433/studyflow_test
+      JWT_ACCESS_SECRET: ci-access-secret
+      JWT_REFRESH_SECRET: ci-refresh-secret
+    steps:
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm lint
+      - run: pnpm typecheck
+      - run: pnpm test
+      - name: Migrations apply to a clean database
+        run: pnpm --filter @studyflow/api db:deploy
+      - run: pnpm build

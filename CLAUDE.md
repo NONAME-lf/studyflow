@@ -34,6 +34,7 @@
 ## Технічні рішення (зафіксовані; відхилення — лише з обґрунтуванням і після питання)
 
 - **Monorepo, pnpm workspaces:** `apps/api` (NestJS), `apps/web` (Next.js, App Router). TypeScript strict скрізь. Останні стабільні версії.
+- **Версії (погоджено 10.11):** NestJS 12 — лише ESM: у `apps/api` відносні імпорти з `.js` (`./x.service.js`). Prisma 7: генератор `prisma-client` → `apps/api/src/generated/prisma` (не в git), драйвер `@prisma/adapter-pg`, налаштування в `prisma.config.ts` (seed теж там; `migrate reset` сам сид не запускає). TypeScript 6.0, бо TS 7 не підтримують typescript-eslint і @nestjs/cli. ESLint 9, бо eslint-config-next ще не підтримує 10. Next.js 16 (Turbopack, `output: 'standalone'`): перед кодом фронтенду звіряйся з документацією в `apps/web/node_modules/next/dist/docs/` (див. `apps/web/AGENTS.md`, його перестворює `next dev`). Env API — `apps/api/.env` (шаблон `.env.example`).
 - **БД:** PostgreSQL 16 у Docker Compose (порт хоста **5433**, щоб не конфліктувати з локальним Postgres). ORM **Prisma** — схема як єдине джерело правди, міграції, сид.
 - **Архітектура API:** модульний моноліт, шари Controller → Service → Prisma. Модулі: `auth`, `users`, `groups`, `subjects`, `deadlines`, `tasks`, `reminders`, `mail`, `health`. Глобальний префікс `/api`.
 - **Автентифікація:** JWT. Access (15 хв) — у тілі відповіді, зберігається в пам'яті клієнта. Refresh (7 днів) — httpOnly cookie, ротація, у БД зберігається лише хеш. Паролі — bcrypt.
@@ -43,7 +44,7 @@
 - **Нагадування:** `@nestjs/schedule` (cron з env) + Nodemailer → **Mailpit** у dev (UI на :8025 — показуємо на демо). `ReminderLog` — захист від повторних листів. Dev-ендпоінт для ручного запуску.
 - **API-документація:** `@nestjs/swagger`, UI на `/api/docs`, експорт `docs/api/openapi.json`. Типи для фронтенду генеруються з OpenAPI (`openapi-typescript`) — це наші «спільні типи».
 - **Frontend:** Tailwind CSS + shadcn/ui, TanStack Query, react-hook-form + zod, date-fns (локаль `uk`, тиждень з понеділка), dnd-kit для канбану.
-- **Тести:** Jest (unit, Prisma мокається через `jest-mock-extended`), Jest + supertest (інтеграційні, справжня тестова БД `studyflow_test`, пошта — in-memory stub), Playwright (E2E + скріншоти для звіту). Звіти прогонів у JSON → LaTeX-таблиці.
+- **Тести:** Vitest замість Jest (погоджено 10.11: NestJS 12 — лише ESM, Vitest — його стандарт; API як у Jest, але `vi.fn()`). Unit — Prisma мокається через `vitest-mock-extended`; інтеграційні — Vitest + supertest, справжня тестова БД `studyflow_test`, пошта — in-memory stub; Playwright (E2E + скріншоти для звіту). Звіти прогонів у JSON → LaTeX-таблиці. Пастка: хук `beforeEach(() => mock.mockReset())` повертає функцію, і Vitest викликає її як cleanup — тіло хука писати у фігурних дужках.
 - **Якість:** ESLint + Prettier. CI — GitHub Actions: lint, typecheck, unit, integration (postgres service), build.
 - **UML:** PlantUML (`docs/uml/*.puml`) → PNG через Docker-образ `plantuml/plantuml`.
 - **Звіти:** LaTeX, XeLaTeX, `reports/preamble.tex`; презентації — Beamer `metropolis` (див. `reports/stage1-slides.tex`).
@@ -56,26 +57,33 @@ apps/web/            Next.js: app/, components/, lib/api (згенеровані
 docs/                специфікація, вимоги етапів, uml/, api/openapi.json
 reports/             LaTeX: stage4.tex, stage4-slides.tex, img/, generated/ (таблиці з тестів), build.sh
 scripts/             test-report (JSON → .tex), screenshots, uml render
-docker-compose.yml   postgres (5433), mailpit (1025 SMTP, 8025 UI)
+docker-compose.yml   postgres (5433), mailpit (1025 SMTP, 8025 UI); профіль full — api + web у контейнерах (T-02)
 .github/workflows/   ci.yml
 ```
 
-## Команди (створити в першій фазі, тримати актуальними тут)
+## Команди (тримати актуальними)
 
 ```
 docker compose up -d          # postgres + mailpit
-pnpm install
-pnpm db:migrate | db:seed | db:reset
+cp apps/api/.env.example apps/api/.env
+pnpm install                  # + prisma generate (postinstall)
+pnpm db:migrate | db:seed | db:reset   # reset = migrate reset --force + seed
 pnpm dev                      # api :3001, web :3000
-pnpm lint | typecheck
-pnpm test                     # unit (api)
-pnpm test:int                 # integration (api + studyflow_test)
-pnpm test:e2e                 # Playwright (потребує запущених api+web+сиду)
-pnpm test:report              # прогони з JSON-виводом → reports/generated/*.tex
-pnpm openapi:export           # → docs/api/openapi.json (+ генерація типів для web)
-pnpm uml                      # docs/uml/*.puml → docs/uml/out/*.png
-pnpm screenshots              # Playwright → reports/img/*.png
-cd reports && ./build.sh stage4   # PDF
+pnpm lint                     # prettier --check + eslint (обидва застосунки)
+pnpm typecheck
+pnpm test                     # unit (api, Vitest)
+pnpm openapi:export           # → docs/api/openapi.json + apps/web/lib/api/schema.d.ts
+pnpm build
+pnpm format
+docker compose --profile full up -d --build   # усе в контейнерах
+
+# з'являться у наступних фазах:
+pnpm test:int                 # integration (api + studyflow_test) — P6
+pnpm test:e2e                 # Playwright (потребує запущених api+web+сиду) — P6
+pnpm test:report              # прогони з JSON-виводом → reports/generated/*.tex — P6
+pnpm uml                      # docs/uml/*.puml → docs/uml/out/*.png — P7
+pnpm screenshots              # Playwright → reports/img/*.png — P7
+cd reports && ./build.sh stage4   # PDF (потрібен повний MacTeX)
 ```
 
 ## Трасованість (для звітів і захисту)

@@ -1,0 +1,25 @@
+{
+  "name": "studyflow",
+  "version": "0.1.0",
+  "private": true,
+  "description": "StudyFlow — planner of study deadlines for student groups",
+  "packageManager": "pnpm@10.34.6",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "dev": "pnpm --parallel --filter \"./apps/*\" dev",
+    "build": "pnpm -r build",
+    "lint": "prettier --check . && pnpm -r lint",
+    "typecheck": "pnpm -r typecheck",
+    "test": "pnpm --filter @studyflow/api test",
+    "format": "prettier --write .",
+    "db:migrate": "pnpm --filter @studyflow/api db:migrate",
+    "db:seed": "pnpm --filter @studyflow/api db:seed",
+    "db:reset": "pnpm --filter @studyflow/api db:reset",
+    "openapi:export": "pnpm --filter @studyflow/api openapi:export && pnpm --filter @studyflow/web openapi:types"
+  },
+  "devDependencies": {
+    "prettier": "^3.9.10"
+  }
+}
