@@ -44,6 +44,7 @@ services:
       SMTP_PORT: 1025
       MAIL_FROM: StudyFlow <no-reply@studyflow.dev>
       REMINDER_CRON: '0 * * * *'
+      APP_TIMEZONE: Europe/Kyiv
     ports:
       - '3001:3001'
     depends_on:

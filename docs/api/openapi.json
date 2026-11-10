@@ -1761,6 +1761,304 @@
         ]
       }
     },
+    "/api/groups/{groupId}/tasks": {
+      "get": {
+        "description": "Упорядковані за колонкою (TODO → IN_PROGRESS → DONE) і позицією.",
+        "operationId": "TasksController_list",
+        "parameters": [
+          {
+            "name": "groupId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/TaskDto"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Немає access-токена",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Не учасник групи",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Задачі канбану групи",
+        "tags": [
+          "tasks"
+        ]
+      },
+      "post": {
+        "description": "Будь-який учасник групи.",
+        "operationId": "TasksController_create",
+        "parameters": [
+          {
+            "name": "groupId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateTaskDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TaskDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Невалідні дані, виконавець не з групи або дедлайн іншої групи",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Немає access-токена",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Не учасник групи",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Створити задачу",
+        "tags": [
+          "tasks"
+        ]
+      }
+    },
+    "/api/tasks/{id}": {
+      "patch": {
+        "description": "Будь-який учасник групи. status + position — перетягування між колонками й у колонці.",
+        "operationId": "TasksController_update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateTaskDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TaskDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Виконавець не з групи",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Немає access-токена",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Задачу не знайдено",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Змінити задачу або перемістити її",
+        "tags": [
+          "tasks"
+        ]
+      },
+      "delete": {
+        "description": "Автор задачі або староста.",
+        "operationId": "TasksController_remove",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Задачу видалено"
+          },
+          "401": {
+            "description": "Немає access-токена",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Не автор і не староста",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Задачу не знайдено",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Видалити задачу",
+        "tags": [
+          "tasks"
+        ]
+      }
+    },
+    "/api/dev/reminders/run": {
+      "post": {
+        "description": "Для демо: те саме, що робить cron. Повторний запуск не надсилає дублікатів. Доступно лише в середовищі розробки.",
+        "operationId": "DevRemindersController_run",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RemindersRunResultDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "У production ендпоінт вимкнений"
+          }
+        },
+        "summary": "Запустити розсилку нагадувань зараз",
+        "tags": [
+          "dev"
+        ]
+      }
+    },
     "/api/health": {
       "get": {
         "operationId": "HealthController_check",
@@ -1813,6 +2111,14 @@
     {
       "name": "deadlines",
       "description": "Особисті й групові дедлайни, відмітка виконання, прогрес"
+    },
+    {
+      "name": "tasks",
+      "description": "Канбан командних задач"
+    },
+    {
+      "name": "dev",
+      "description": "Лише для розробки й демо"
     },
     {
       "name": "health",
@@ -2471,6 +2777,231 @@
             "description": "Груповий дедлайн — предмет цієї групи; особистий — предмет будь-якої групи автора"
           }
         }
+      },
+      "TaskStatus": {
+        "type": "string",
+        "enum": [
+          "TODO",
+          "IN_PROGRESS",
+          "DONE"
+        ]
+      },
+      "UserRefDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "fullName": {
+            "type": "string",
+            "example": "Мекшаков Артемій"
+          }
+        },
+        "required": [
+          "id",
+          "fullName"
+        ]
+      },
+      "DeadlineRefDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "title": {
+            "type": "string",
+            "example": "Етап 4: звіт і демо-презентація"
+          },
+          "dueAt": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "dueAt"
+        ]
+      },
+      "TaskDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "groupId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "title": {
+            "type": "string",
+            "example": "Календар тижня"
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "status": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/TaskStatus"
+              }
+            ]
+          },
+          "position": {
+            "type": "number",
+            "example": 0,
+            "description": "Порядок у колонці, від 0"
+          },
+          "assignee": {
+            "nullable": true,
+            "type": "object",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/UserRefDto"
+              }
+            ]
+          },
+          "deadline": {
+            "nullable": true,
+            "description": "Пов’язаний дедлайн",
+            "type": "object",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/DeadlineRefDto"
+              }
+            ]
+          },
+          "createdBy": {
+            "$ref": "#/components/schemas/UserRefDto"
+          },
+          "canDelete": {
+            "type": "boolean",
+            "description": "Автор задачі або староста"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "groupId",
+          "title",
+          "description",
+          "status",
+          "position",
+          "assignee",
+          "deadline",
+          "createdBy",
+          "canDelete",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "CreateTaskDto": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "example": "Підготувати слайди демо",
+            "maxLength": 200
+          },
+          "description": {
+            "type": "string",
+            "nullable": true,
+            "maxLength": 2000
+          },
+          "status": {
+            "default": "TODO",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/TaskStatus"
+              }
+            ]
+          },
+          "assigneeId": {
+            "type": "string",
+            "nullable": true,
+            "format": "uuid",
+            "description": "Учасник групи"
+          },
+          "deadlineId": {
+            "type": "string",
+            "nullable": true,
+            "format": "uuid",
+            "description": "Дедлайн групи"
+          }
+        },
+        "required": [
+          "title"
+        ]
+      },
+      "UpdateTaskDto": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "example": "Підготувати слайди демо",
+            "maxLength": 200
+          },
+          "description": {
+            "type": "string",
+            "nullable": true,
+            "maxLength": 2000
+          },
+          "status": {
+            "default": "TODO",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/TaskStatus"
+              }
+            ]
+          },
+          "assigneeId": {
+            "type": "string",
+            "nullable": true,
+            "format": "uuid",
+            "description": "Учасник групи"
+          },
+          "deadlineId": {
+            "type": "string",
+            "nullable": true,
+            "format": "uuid",
+            "description": "Дедлайн групи"
+          },
+          "position": {
+            "type": "number",
+            "example": 0,
+            "description": "Нова позиція в колонці (drag-and-drop)"
+          }
+        }
+      },
+      "RemindersRunResultDto": {
+        "type": "object",
+        "properties": {
+          "sent": {
+            "type": "number",
+            "example": 3,
+            "description": "Надіслано листів"
+          },
+          "failed": {
+            "type": "number",
+            "example": 0,
+            "description": "Помилок надсилання"
+          }
+        },
+        "required": [
+          "sent",
+          "failed"
+        ]
       },
       "HealthDto": {
         "type": "object",

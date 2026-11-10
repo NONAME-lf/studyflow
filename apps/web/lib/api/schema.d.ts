@@ -418,6 +418,74 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/groups/{groupId}/tasks": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Задачі канбану групи
+         * @description Упорядковані за колонкою (TODO → IN_PROGRESS → DONE) і позицією.
+         */
+        get: operations["TasksController_list"];
+        put?: never;
+        /**
+         * Створити задачу
+         * @description Будь-який учасник групи.
+         */
+        post: operations["TasksController_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/tasks/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /**
+         * Видалити задачу
+         * @description Автор задачі або староста.
+         */
+        delete: operations["TasksController_remove"];
+        options?: never;
+        head?: never;
+        /**
+         * Змінити задачу або перемістити її
+         * @description Будь-який учасник групи. status + position — перетягування між колонками й у колонці.
+         */
+        patch: operations["TasksController_update"];
+        trace?: never;
+    };
+    "/api/dev/reminders/run": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Запустити розсилку нагадувань зараз
+         * @description Для демо: те саме, що робить cron. Повторний запуск не надсилає дублікатів. Доступно лише в середовищі розробки.
+         */
+        post: operations["DevRemindersController_run"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/health": {
         parameters: {
             query?: never;
@@ -694,6 +762,98 @@ export interface components {
              * @description Груповий дедлайн — предмет цієї групи; особистий — предмет будь-якої групи автора
              */
             subjectId?: string | null;
+        };
+        /** @enum {string} */
+        TaskStatus: "TODO" | "IN_PROGRESS" | "DONE";
+        UserRefDto: {
+            /** Format: uuid */
+            id: string;
+            /** @example Мекшаков Артемій */
+            fullName: string;
+        };
+        DeadlineRefDto: {
+            /** Format: uuid */
+            id: string;
+            /** @example Етап 4: звіт і демо-презентація */
+            title: string;
+            /** Format: date-time */
+            dueAt: string;
+        };
+        TaskDto: {
+            /** Format: uuid */
+            id: string;
+            /** Format: uuid */
+            groupId: string;
+            /** @example Календар тижня */
+            title: string;
+            description: string | null;
+            status: components["schemas"]["TaskStatus"];
+            /**
+             * @description Порядок у колонці, від 0
+             * @example 0
+             */
+            position: number;
+            assignee: components["schemas"]["UserRefDto"] | null;
+            /** @description Пов’язаний дедлайн */
+            deadline: components["schemas"]["DeadlineRefDto"] | null;
+            createdBy: components["schemas"]["UserRefDto"];
+            /** @description Автор задачі або староста */
+            canDelete: boolean;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+        };
+        CreateTaskDto: {
+            /** @example Підготувати слайди демо */
+            title: string;
+            description?: string | null;
+            /** @default TODO */
+            status: components["schemas"]["TaskStatus"];
+            /**
+             * Format: uuid
+             * @description Учасник групи
+             */
+            assigneeId?: string | null;
+            /**
+             * Format: uuid
+             * @description Дедлайн групи
+             */
+            deadlineId?: string | null;
+        };
+        UpdateTaskDto: {
+            /** @example Підготувати слайди демо */
+            title?: string;
+            description?: string | null;
+            /** @default TODO */
+            status: components["schemas"]["TaskStatus"];
+            /**
+             * Format: uuid
+             * @description Учасник групи
+             */
+            assigneeId?: string | null;
+            /**
+             * Format: uuid
+             * @description Дедлайн групи
+             */
+            deadlineId?: string | null;
+            /**
+             * @description Нова позиція в колонці (drag-and-drop)
+             * @example 0
+             */
+            position?: number;
+        };
+        RemindersRunResultDto: {
+            /**
+             * @description Надіслано листів
+             * @example 3
+             */
+            sent: number;
+            /**
+             * @description Помилок надсилання
+             * @example 0
+             */
+            failed: number;
         };
         HealthDto: {
             /**
@@ -1937,6 +2097,222 @@ export interface operations {
                 content: {
                     "application/json": components["schemas"]["ErrorResponseDto"];
                 };
+            };
+        };
+    };
+    TasksController_list: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                groupId: unknown;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TaskDto"][];
+                };
+            };
+            /** @description Немає access-токена */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Не учасник групи */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    TasksController_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                groupId: unknown;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateTaskDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TaskDto"];
+                };
+            };
+            /** @description Невалідні дані, виконавець не з групи або дедлайн іншої групи */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Немає access-токена */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Не учасник групи */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    TasksController_remove: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Задачу видалено */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Немає access-токена */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Не автор і не староста */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Задачу не знайдено */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    TasksController_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateTaskDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TaskDto"];
+                };
+            };
+            /** @description Виконавець не з групи */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Немає access-токена */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Задачу не знайдено */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    DevRemindersController_run: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RemindersRunResultDto"];
+                };
+            };
+            /** @description У production ендпоінт вимкнений */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
             };
         };
     };

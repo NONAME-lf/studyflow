@@ -19,6 +19,8 @@ export function buildOpenApiDocument(app: INestApplication): OpenAPIObject {
     .addTag('groups', 'Групи, учасники, ролі, коди запрошення')
     .addTag('subjects', 'Предмети групи')
     .addTag('deadlines', 'Особисті й групові дедлайни, відмітка виконання, прогрес')
+    .addTag('tasks', 'Канбан командних задач')
+    .addTag('dev', 'Лише для розробки й демо')
     .addTag('health', 'Стан сервісу')
     .build();
 

@@ -15,6 +15,8 @@ const prisma = new PrismaClient({ adapter: new PrismaPg({ connectionString }) })
 
 const DEMO_PASSWORD = 'Demo1234!';
 const INVITE_CODE = 'STUDY424';
+// Wider than the default 1 day, so the live demo of reminders (US-23) always has letters to show.
+const DEMO_REMINDER_DAYS = 3;
 
 const USERS = {
   starosta: { email: 'starosta@studyflow.dev', fullName: 'Петров Богдан', role: GroupRole.HEADMAN },
@@ -196,8 +198,19 @@ async function main(): Promise<void> {
   for (const [key, user] of Object.entries(USERS) as [UserKey, (typeof USERS)[UserKey]][]) {
     const { id: userId } = await prisma.user.upsert({
       where: { email: user.email },
-      create: { email: user.email, fullName: user.fullName, passwordHash },
-      update: { fullName: user.fullName, passwordHash, refreshTokenHash: null },
+      create: {
+        email: user.email,
+        fullName: user.fullName,
+        passwordHash,
+        reminderDaysBefore: DEMO_REMINDER_DAYS,
+      },
+      update: {
+        fullName: user.fullName,
+        passwordHash,
+        refreshTokenHash: null,
+        reminderEnabled: true,
+        reminderDaysBefore: DEMO_REMINDER_DAYS,
+      },
     });
     users[key] = userId;
   }
