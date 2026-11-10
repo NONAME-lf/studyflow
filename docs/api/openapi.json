@@ -1,6 +1,840 @@
 {
   "openapi": "3.0.0",
   "paths": {
+    "/api/auth/register": {
+      "post": {
+        "description": "Email унікальний без урахування регістру; пароль — від 8 символів, у БД зберігається лише bcrypt-хеш. Повертає access-токен і встановлює httpOnly refresh-cookie.",
+        "operationId": "AuthController_register",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Невалідні дані",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Email уже зареєстровано",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Реєстрація (одразу виконує вхід)",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/api/auth/login": {
+      "post": {
+        "description": "Повертає access-токен (15 хв) і встановлює httpOnly refresh-cookie (7 днів).",
+        "operationId": "AuthController_login",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Невалідні дані",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Невірний email або пароль",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Вхід",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/api/auth/refresh": {
+      "post": {
+        "description": "Обмінює refresh-cookie на нову пару токенів (ротація: старий refresh-токен стає недійсним).",
+        "operationId": "AuthController_refresh",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Немає або недійсний refresh-токен",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "refresh_token": []
+          }
+        ],
+        "summary": "Оновлення токенів",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/api/auth/logout": {
+      "post": {
+        "description": "Інвалідовує refresh-токен і видаляє cookie.",
+        "operationId": "AuthController_logout",
+        "parameters": [],
+        "responses": {
+          "204": {
+            "description": "Сесію завершено"
+          },
+          "401": {
+            "description": "Немає access-токена",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Вихід",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/api/auth/me": {
+      "get": {
+        "operationId": "AuthController_me",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Немає access-токена",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Поточний користувач",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/api/users/me": {
+      "patch": {
+        "operationId": "UsersController_updateProfile",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateProfileDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Невалідні дані",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Немає access-токена",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Змінити ім'я",
+        "tags": [
+          "users"
+        ]
+      }
+    },
+    "/api/users/me/password": {
+      "patch": {
+        "description": "Потрібен поточний пароль.",
+        "operationId": "UsersController_changePassword",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChangePasswordDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "Пароль змінено"
+          },
+          "400": {
+            "description": "Невірний поточний пароль або невалідний новий",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Немає access-токена",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Змінити пароль",
+        "tags": [
+          "users"
+        ]
+      }
+    },
+    "/api/groups": {
+      "post": {
+        "description": "Творець групи стає старостою.",
+        "operationId": "GroupsController_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateGroupDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GroupDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Невалідна назва",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Немає access-токена",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Створити групу",
+        "tags": [
+          "groups"
+        ]
+      },
+      "get": {
+        "operationId": "GroupsController_listMine",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/GroupDto"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Немає access-токена",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Мої групи і моя роль в кожній",
+        "tags": [
+          "groups"
+        ]
+      }
+    },
+    "/api/groups/join": {
+      "post": {
+        "description": "Новий учасник отримує роль MEMBER.",
+        "operationId": "GroupsController_join",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/JoinGroupDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GroupDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Немає access-токена",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Невідомий код",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Уже учасник групи",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Приєднатися за кодом запрошення",
+        "tags": [
+          "groups"
+        ]
+      }
+    },
+    "/api/groups/{groupId}": {
+      "get": {
+        "description": "Код запрошення бачить лише староста.",
+        "operationId": "GroupsController_getOne",
+        "parameters": [
+          {
+            "name": "groupId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GroupDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Немає access-токена",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Не учасник групи",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Деталі групи",
+        "tags": [
+          "groups"
+        ]
+      }
+    },
+    "/api/groups/{groupId}/invite-code": {
+      "post": {
+        "description": "Лише староста.",
+        "operationId": "GroupsController_regenerateInviteCode",
+        "parameters": [
+          {
+            "name": "groupId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InviteCodeDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Немає access-токена",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Не учасник групи або не староста",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Перегенерувати код запрошення",
+        "tags": [
+          "groups"
+        ]
+      }
+    },
+    "/api/groups/{groupId}/members": {
+      "get": {
+        "description": "Спершу старости, далі за датою вступу.",
+        "operationId": "GroupsController_listMembers",
+        "parameters": [
+          {
+            "name": "groupId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/MemberDto"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Немає access-токена",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Не учасник групи",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Учасники групи",
+        "tags": [
+          "groups"
+        ]
+      }
+    },
+    "/api/groups/{groupId}/members/{userId}": {
+      "patch": {
+        "description": "Лише староста. Передача ролі: призначити іншого HEADMAN, потім понизити себе. Останнього старосту понизити не можна.",
+        "operationId": "GroupsController_changeRole",
+        "parameters": [
+          {
+            "name": "groupId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          },
+          {
+            "name": "userId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateMemberRoleDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MemberDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Останній староста",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Немає access-токена",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Не учасник групи або не староста",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Учасника не знайдено",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Змінити роль учасника",
+        "tags": [
+          "groups"
+        ]
+      },
+      "delete": {
+        "description": "Староста видаляє будь-кого; учасник може видалити лише себе (вийти). Останній староста не може вийти чи бути видаленим.",
+        "operationId": "GroupsController_removeMember",
+        "parameters": [
+          {
+            "name": "userId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          },
+          {
+            "name": "groupId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Учасника видалено"
+          },
+          "400": {
+            "description": "Останній староста",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Немає access-токена",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Не учасник групи",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Учасника не знайдено",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Видалити учасника або вийти з групи",
+        "tags": [
+          "groups"
+        ]
+      }
+    },
     "/api/health": {
       "get": {
         "operationId": "HealthController_check",
@@ -35,6 +869,18 @@
   },
   "tags": [
     {
+      "name": "auth",
+      "description": "Реєстрація, вхід, токени"
+    },
+    {
+      "name": "users",
+      "description": "Профіль поточного користувача"
+    },
+    {
+      "name": "groups",
+      "description": "Групи, учасники, ролі, коди запрошення"
+    },
+    {
       "name": "health",
       "description": "Стан сервісу"
     }
@@ -46,9 +892,311 @@
         "scheme": "bearer",
         "bearerFormat": "JWT",
         "type": "http"
+      },
+      "cookie": {
+        "type": "apiKey",
+        "in": "cookie",
+        "name": "refresh_token"
       }
     },
     "schemas": {
+      "RegisterDto": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "example": "student@studyflow.dev"
+          },
+          "password": {
+            "type": "string",
+            "example": "Secret123!",
+            "minLength": 8,
+            "maxLength": 72
+          },
+          "fullName": {
+            "type": "string",
+            "example": "Коваль Олена",
+            "minLength": 2,
+            "maxLength": 100
+          }
+        },
+        "required": [
+          "email",
+          "password",
+          "fullName"
+        ]
+      },
+      "UserDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "example": "5eed0000-0000-4000-8000-000000000001"
+          },
+          "email": {
+            "type": "string",
+            "example": "artem@studyflow.dev"
+          },
+          "fullName": {
+            "type": "string",
+            "example": "Мекшаков Артемій"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string",
+            "example": "2026-11-10T18:00:00.000Z"
+          }
+        },
+        "required": [
+          "id",
+          "email",
+          "fullName",
+          "createdAt"
+        ]
+      },
+      "AuthResponseDto": {
+        "type": "object",
+        "properties": {
+          "accessToken": {
+            "type": "string",
+            "description": "Access-токен (JWT, 15 хв). Передавати в заголовку Authorization: Bearer …",
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9…"
+          },
+          "user": {
+            "$ref": "#/components/schemas/UserDto"
+          }
+        },
+        "required": [
+          "accessToken",
+          "user"
+        ]
+      },
+      "ErrorResponseDto": {
+        "type": "object",
+        "properties": {
+          "statusCode": {
+            "type": "number",
+            "example": 400
+          },
+          "message": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            ],
+            "example": "Пароль має містити щонайменше 8 символів"
+          },
+          "error": {
+            "type": "string",
+            "example": "Bad Request"
+          }
+        },
+        "required": [
+          "statusCode",
+          "message",
+          "error"
+        ]
+      },
+      "LoginDto": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "example": "starosta@studyflow.dev"
+          },
+          "password": {
+            "type": "string",
+            "example": "Demo1234!"
+          }
+        },
+        "required": [
+          "email",
+          "password"
+        ]
+      },
+      "UpdateProfileDto": {
+        "type": "object",
+        "properties": {
+          "fullName": {
+            "type": "string",
+            "example": "Мекшаков Артемій",
+            "minLength": 2,
+            "maxLength": 100
+          }
+        },
+        "required": [
+          "fullName"
+        ]
+      },
+      "ChangePasswordDto": {
+        "type": "object",
+        "properties": {
+          "currentPassword": {
+            "type": "string",
+            "example": "Demo1234!"
+          },
+          "newPassword": {
+            "type": "string",
+            "example": "NewSecret123!",
+            "minLength": 8,
+            "maxLength": 72
+          }
+        },
+        "required": [
+          "currentPassword",
+          "newPassword"
+        ]
+      },
+      "CreateGroupDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "МІ-41",
+            "minLength": 2,
+            "maxLength": 50
+          }
+        },
+        "required": [
+          "name"
+        ]
+      },
+      "GroupRole": {
+        "type": "string",
+        "enum": [
+          "HEADMAN",
+          "MEMBER"
+        ],
+        "description": "Роль поточного користувача"
+      },
+      "GroupDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string",
+            "example": "МІ-41"
+          },
+          "myRole": {
+            "description": "Роль поточного користувача",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/GroupRole"
+              }
+            ]
+          },
+          "memberCount": {
+            "type": "number",
+            "example": 4
+          },
+          "inviteCode": {
+            "type": "string",
+            "nullable": true,
+            "example": "STUDY424",
+            "description": "Код запрошення — лише для старости, іншим null"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string",
+            "example": "2026-11-10T18:00:00.000Z"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "myRole",
+          "memberCount",
+          "inviteCode",
+          "createdAt"
+        ]
+      },
+      "JoinGroupDto": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "example": "STUDY424",
+            "description": "Код запрошення (регістр не важливий)"
+          }
+        },
+        "required": [
+          "code"
+        ]
+      },
+      "InviteCodeDto": {
+        "type": "object",
+        "properties": {
+          "inviteCode": {
+            "type": "string",
+            "example": "K7MPQ2XA"
+          }
+        },
+        "required": [
+          "inviteCode"
+        ]
+      },
+      "MemberDto": {
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "fullName": {
+            "type": "string",
+            "example": "Мекшаков Артемій"
+          },
+          "email": {
+            "type": "string",
+            "example": "artem@studyflow.dev"
+          },
+          "role": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/GroupRole"
+              }
+            ]
+          },
+          "joinedAt": {
+            "format": "date-time",
+            "type": "string",
+            "example": "2026-11-10T18:00:00.000Z"
+          }
+        },
+        "required": [
+          "userId",
+          "fullName",
+          "email",
+          "role",
+          "joinedAt"
+        ]
+      },
+      "UpdateMemberRoleDto": {
+        "type": "object",
+        "properties": {
+          "role": {
+            "example": "HEADMAN",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/GroupRole"
+              }
+            ]
+          }
+        },
+        "required": [
+          "role"
+        ]
+      },
       "HealthDto": {
         "type": "object",
         "properties": {

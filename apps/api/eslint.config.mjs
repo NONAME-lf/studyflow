@@ -19,6 +19,11 @@ export default defineConfig([
     },
   },
   {
+    // expect(mock.method) is the normal way to assert on mocks.
+    files: ['**/*.spec.ts', 'test/**/*.ts'],
+    rules: { '@typescript-eslint/unbound-method': 'off' },
+  },
+  {
     files: ['**/*.mjs'],
     extends: [tseslint.configs.disableTypeChecked],
   },

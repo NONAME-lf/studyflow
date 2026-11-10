@@ -13,6 +13,10 @@ export function buildOpenApiDocument(app: INestApplication): OpenAPIObject {
     )
     .setVersion('0.1.0')
     .addBearerAuth()
+    .addCookieAuth('refresh_token')
+    .addTag('auth', 'Реєстрація, вхід, токени')
+    .addTag('users', 'Профіль поточного користувача')
+    .addTag('groups', 'Групи, учасники, ролі, коди запрошення')
     .addTag('health', 'Стан сервісу')
     .build();
 

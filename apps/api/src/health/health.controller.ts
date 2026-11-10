@@ -5,10 +5,12 @@ import {
   ApiServiceUnavailableResponse,
   ApiTags,
 } from '@nestjs/swagger';
+import { Public } from '../common/decorators/public.decorator.js';
 import { HealthDto } from './health.dto.js';
 import { HealthService } from './health.service.js';
 
 @ApiTags('health')
+@Public()
 @Controller('health')
 export class HealthController {
   constructor(private readonly health: HealthService) {}

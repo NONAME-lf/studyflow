@@ -4,6 +4,265 @@
  */
 
 export interface paths {
+    "/api/auth/register": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Реєстрація (одразу виконує вхід)
+         * @description Email унікальний без урахування регістру; пароль — від 8 символів, у БД зберігається лише bcrypt-хеш. Повертає access-токен і встановлює httpOnly refresh-cookie.
+         */
+        post: operations["AuthController_register"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/auth/login": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Вхід
+         * @description Повертає access-токен (15 хв) і встановлює httpOnly refresh-cookie (7 днів).
+         */
+        post: operations["AuthController_login"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/auth/refresh": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Оновлення токенів
+         * @description Обмінює refresh-cookie на нову пару токенів (ротація: старий refresh-токен стає недійсним).
+         */
+        post: operations["AuthController_refresh"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/auth/logout": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Вихід
+         * @description Інвалідовує refresh-токен і видаляє cookie.
+         */
+        post: operations["AuthController_logout"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/auth/me": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Поточний користувач */
+        get: operations["AuthController_me"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/users/me": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Змінити ім'я */
+        patch: operations["UsersController_updateProfile"];
+        trace?: never;
+    };
+    "/api/users/me/password": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * Змінити пароль
+         * @description Потрібен поточний пароль.
+         */
+        patch: operations["UsersController_changePassword"];
+        trace?: never;
+    };
+    "/api/groups": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Мої групи і моя роль в кожній */
+        get: operations["GroupsController_listMine"];
+        put?: never;
+        /**
+         * Створити групу
+         * @description Творець групи стає старостою.
+         */
+        post: operations["GroupsController_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/groups/join": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Приєднатися за кодом запрошення
+         * @description Новий учасник отримує роль MEMBER.
+         */
+        post: operations["GroupsController_join"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/groups/{groupId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Деталі групи
+         * @description Код запрошення бачить лише староста.
+         */
+        get: operations["GroupsController_getOne"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/groups/{groupId}/invite-code": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Перегенерувати код запрошення
+         * @description Лише староста.
+         */
+        post: operations["GroupsController_regenerateInviteCode"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/groups/{groupId}/members": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Учасники групи
+         * @description Спершу старости, далі за датою вступу.
+         */
+        get: operations["GroupsController_listMembers"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/groups/{groupId}/members/{userId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /**
+         * Видалити учасника або вийти з групи
+         * @description Староста видаляє будь-кого; учасник може видалити лише себе (вийти). Останній староста не може вийти чи бути видаленим.
+         */
+        delete: operations["GroupsController_removeMember"];
+        options?: never;
+        head?: never;
+        /**
+         * Змінити роль учасника
+         * @description Лише староста. Передача ролі: призначити іншого HEADMAN, потім понизити себе. Останнього старосту понизити не можна.
+         */
+        patch: operations["GroupsController_changeRole"];
+        trace?: never;
+    };
     "/api/health": {
         parameters: {
             query?: never;
@@ -25,6 +284,120 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        RegisterDto: {
+            /** @example student@studyflow.dev */
+            email: string;
+            /** @example Secret123! */
+            password: string;
+            /** @example Коваль Олена */
+            fullName: string;
+        };
+        UserDto: {
+            /**
+             * Format: uuid
+             * @example 5eed0000-0000-4000-8000-000000000001
+             */
+            id: string;
+            /** @example artem@studyflow.dev */
+            email: string;
+            /** @example Мекшаков Артемій */
+            fullName: string;
+            /**
+             * Format: date-time
+             * @example 2026-11-10T18:00:00.000Z
+             */
+            createdAt: string;
+        };
+        AuthResponseDto: {
+            /**
+             * @description Access-токен (JWT, 15 хв). Передавати в заголовку Authorization: Bearer …
+             * @example eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9…
+             */
+            accessToken: string;
+            user: components["schemas"]["UserDto"];
+        };
+        ErrorResponseDto: {
+            /** @example 400 */
+            statusCode: number;
+            /** @example Пароль має містити щонайменше 8 символів */
+            message: string | string[];
+            /** @example Bad Request */
+            error: string;
+        };
+        LoginDto: {
+            /** @example starosta@studyflow.dev */
+            email: string;
+            /** @example Demo1234! */
+            password: string;
+        };
+        UpdateProfileDto: {
+            /** @example Мекшаков Артемій */
+            fullName: string;
+        };
+        ChangePasswordDto: {
+            /** @example Demo1234! */
+            currentPassword: string;
+            /** @example NewSecret123! */
+            newPassword: string;
+        };
+        CreateGroupDto: {
+            /** @example МІ-41 */
+            name: string;
+        };
+        /**
+         * @description Роль поточного користувача
+         * @enum {string}
+         */
+        GroupRole: "HEADMAN" | "MEMBER";
+        GroupDto: {
+            /** Format: uuid */
+            id: string;
+            /** @example МІ-41 */
+            name: string;
+            /** @description Роль поточного користувача */
+            myRole: components["schemas"]["GroupRole"];
+            /** @example 4 */
+            memberCount: number;
+            /**
+             * @description Код запрошення — лише для старости, іншим null
+             * @example STUDY424
+             */
+            inviteCode: string | null;
+            /**
+             * Format: date-time
+             * @example 2026-11-10T18:00:00.000Z
+             */
+            createdAt: string;
+        };
+        JoinGroupDto: {
+            /**
+             * @description Код запрошення (регістр не важливий)
+             * @example STUDY424
+             */
+            code: string;
+        };
+        InviteCodeDto: {
+            /** @example K7MPQ2XA */
+            inviteCode: string;
+        };
+        MemberDto: {
+            /** Format: uuid */
+            userId: string;
+            /** @example Мекшаков Артемій */
+            fullName: string;
+            /** @example artem@studyflow.dev */
+            email: string;
+            role: components["schemas"]["GroupRole"];
+            /**
+             * Format: date-time
+             * @example 2026-11-10T18:00:00.000Z
+             */
+            joinedAt: string;
+        };
+        UpdateMemberRoleDto: {
+            /** @example HEADMAN */
+            role: components["schemas"]["GroupRole"];
+        };
         HealthDto: {
             /**
              * @example ok
@@ -48,6 +421,607 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
+    AuthController_register: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RegisterDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthResponseDto"];
+                };
+            };
+            /** @description Невалідні дані */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Email уже зареєстровано */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    AuthController_login: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["LoginDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthResponseDto"];
+                };
+            };
+            /** @description Невалідні дані */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Невірний email або пароль */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    AuthController_refresh: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthResponseDto"];
+                };
+            };
+            /** @description Немає або недійсний refresh-токен */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    AuthController_logout: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Сесію завершено */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Немає access-токена */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    AuthController_me: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UserDto"];
+                };
+            };
+            /** @description Немає access-токена */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    UsersController_updateProfile: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateProfileDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UserDto"];
+                };
+            };
+            /** @description Невалідні дані */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Немає access-токена */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    UsersController_changePassword: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ChangePasswordDto"];
+            };
+        };
+        responses: {
+            /** @description Пароль змінено */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Невірний поточний пароль або невалідний новий */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Немає access-токена */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    GroupsController_listMine: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GroupDto"][];
+                };
+            };
+            /** @description Немає access-токена */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    GroupsController_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateGroupDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GroupDto"];
+                };
+            };
+            /** @description Невалідна назва */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Немає access-токена */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    GroupsController_join: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["JoinGroupDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GroupDto"];
+                };
+            };
+            /** @description Немає access-токена */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Невідомий код */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Уже учасник групи */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    GroupsController_getOne: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                groupId: unknown;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GroupDto"];
+                };
+            };
+            /** @description Немає access-токена */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Не учасник групи */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    GroupsController_regenerateInviteCode: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                groupId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InviteCodeDto"];
+                };
+            };
+            /** @description Немає access-токена */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Не учасник групи або не староста */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    GroupsController_listMembers: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                groupId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MemberDto"][];
+                };
+            };
+            /** @description Немає access-токена */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Не учасник групи */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    GroupsController_removeMember: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                userId: string;
+                groupId: unknown;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Учасника видалено */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Останній староста */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Немає access-токена */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Не учасник групи */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Учасника не знайдено */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    GroupsController_changeRole: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                groupId: string;
+                userId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateMemberRoleDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MemberDto"];
+                };
+            };
+            /** @description Останній староста */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Немає access-токена */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Не учасник групи або не староста */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+            /** @description Учасника не знайдено */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
     HealthController_check: {
         parameters: {
             query?: never;
