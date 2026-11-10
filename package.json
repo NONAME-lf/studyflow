@@ -13,11 +13,15 @@
     "lint": "prettier --check . && pnpm -r lint",
     "typecheck": "pnpm -r typecheck",
     "test": "pnpm --filter @studyflow/api test",
+    "test:int": "pnpm --filter @studyflow/api test:int",
+    "test:e2e": "pnpm --filter @studyflow/web test:e2e",
+    "test:report": "node scripts/test-report.mjs",
     "format": "prettier --write .",
     "db:migrate": "pnpm --filter @studyflow/api db:migrate",
     "db:seed": "pnpm --filter @studyflow/api db:seed",
     "db:reset": "pnpm --filter @studyflow/api db:reset",
-    "openapi:export": "pnpm --filter @studyflow/api openapi:export && pnpm --filter @studyflow/web openapi:types"
+    "openapi:export": "pnpm --filter @studyflow/api openapi:export && pnpm --filter @studyflow/web openapi:types",
+    "screenshots": "pnpm --filter @studyflow/web screenshots"
   },
   "devDependencies": {
     "prettier": "^3.9.10"

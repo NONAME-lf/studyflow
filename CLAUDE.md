@@ -72,15 +72,15 @@ pnpm dev                      # api :3001, web :3000
 pnpm lint                     # prettier --check + eslint (обидва застосунки)
 pnpm typecheck
 pnpm test                     # unit (api, Vitest)
+pnpm test:int                 # integration (api + studyflow_test, mail stub; refuses non-*_test DB)
+pnpm test:e2e                 # Playwright E2E-01..03 (starts api+web via webServer if not running)
+pnpm test:report              # all suites + coverage → reports/data/*.json → reports/generated/*.tex
 pnpm openapi:export           # → docs/api/openapi.json + apps/web/lib/api/schema.d.ts
 pnpm build
 pnpm format
 docker compose --profile full up -d --build   # усе в контейнерах
 
 # з'являться у наступних фазах:
-pnpm test:int                 # integration (api + studyflow_test) — P6
-pnpm test:e2e                 # Playwright (потребує запущених api+web+сиду) — P6
-pnpm test:report              # прогони з JSON-виводом → reports/generated/*.tex — P6
 pnpm uml                      # docs/uml/*.puml → docs/uml/out/*.png — P7
 pnpm screenshots              # Playwright → reports/img/*.png — P7
 cd reports && ./build.sh stage4   # PDF (потрібен повний MacTeX)

@@ -1,0 +1,31 @@
+{
+  "runAt": "2026-11-10T23:48:57.376Z",
+  "commit": "828fa41",
+  "unit": {
+    "passed": 40,
+    "total": 40,
+    "seconds": 1.117342041015625
+  },
+  "integration": {
+    "passed": 13,
+    "total": 13,
+    "seconds": 5.604061767578125
+  },
+  "e2e": {
+    "passed": 3,
+    "total": 3,
+    "seconds": 7.458616
+  },
+  "coverage": {
+    "statements": 51.45,
+    "branches": 46.39,
+    "functions": 43.29,
+    "lines": 54.03
+  },
+  "coverageIntegration": {
+    "statements": 68.79,
+    "branches": 51.2,
+    "functions": 68.9,
+    "lines": 73.49
+  }
+}

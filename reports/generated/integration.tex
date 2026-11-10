@@ -1,0 +1,19 @@
+\begin{longtable}{@{}l L{10.6cm} c r@{}}
+\toprule
+ID & Сценарій & Статус & мс\\
+\midrule\endhead
+IT-01 & register → login → GET /auth/me & \textcolor{teal}{пройдено} & 261\\
+IT-02 & refresh через cookie, logout інвалідовує refresh & \textcolor{teal}{пройдено} & 121\\
+IT-03 & захищений ендпоінт без токена → 401 & \textcolor{teal}{пройдено} & 25\\
+IT-04 & невалідне тіло (email, короткий пароль) → 400 & \textcolor{teal}{пройдено} & 23\\
+IT-05 & створення групи + приєднання другим користувачем за кодом & \textcolor{teal}{пройдено} & 390\\
+IT-06 & MEMBER не може створити груповий дедлайн → 403 & \textcolor{teal}{пройдено} & 190\\
+IT-07 & груповий дедлайн старости видно учаснику в GET /deadlines & \textcolor{teal}{пройдено} & 223\\
+IT-08 & відмітка виконання → progress = 50 \% (2 учасники, 1 виконав) & \textcolor{teal}{пройдено} & 244\\
+IT-09 & особистий дедлайн не видно іншому користувачу & \textcolor{teal}{пройдено} & 193\\
+IT-10 & фільтри from/to/status у GET /deadlines & \textcolor{teal}{пройдено} & 138\\
+IT-11 & задачі: створення, зміна статусу, виконавець не з групи → 400 & \textcolor{teal}{пройдено} & 418\\
+IT-12 & POST /dev/reminders/run → 1 лист на пару, повторний запуск → 0 & \textcolor{teal}{пройдено} & 232\\
+IT-13 & GET /api/docs-json → 200, містить усі теги модулів & \textcolor{teal}{пройдено} & 23\\
+\bottomrule
+\end{longtable}

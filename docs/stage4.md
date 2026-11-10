@@ -85,6 +85,10 @@
 | UT-34 | RemindersService | помилка одного листа не зупиняє інші | R3 |
 | UT-35 | HealthService | БД відповідає → `status: ok` | — |
 | UT-36 | HealthService | БД недоступна → 503 | — |
+| UT-37 | UsersService | зміна імені: обрізаються пробіли, без хешу пароля у відповіді | US-04 |
+| UT-38 | UsersService | зміна пароля з невірним поточним → BadRequest | US-04 |
+| UT-39 | SubjectsService | дубль назви предмета в групі → Conflict | US-10 |
+| UT-40 | SubjectsService | видалення предмета іншої групи → NotFound | G4 |
 
 **Інтеграційні (Vitest + supertest, справжня БД `studyflow_test`, пошта — stub)** — ціль ≥ 10:
 

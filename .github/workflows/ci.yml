@@ -45,4 +45,6 @@ jobs:
       - run: pnpm test
       - name: Migrations apply to a clean database
         run: pnpm --filter @studyflow/api db:deploy
+      - name: Integration tests (studyflow_test, mail stub)
+        run: pnpm test:int
       - run: pnpm build

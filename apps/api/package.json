@@ -18,7 +18,8 @@
     "db:deploy": "prisma migrate deploy",
     "db:seed": "prisma db seed",
     "db:reset": "prisma migrate reset --force && prisma db seed",
-    "openapi:export": "nest build && node dist/openapi-export.js"
+    "openapi:export": "nest build && node dist/openapi-export.js",
+    "test:int": "vitest run --config vitest.config.int.ts"
   },
   "dependencies": {
     "@nestjs/common": "^12.4.2",
