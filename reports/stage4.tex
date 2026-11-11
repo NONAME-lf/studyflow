@@ -44,6 +44,8 @@
 \textbf{API} & 34 операції у 8 групах; Swagger UI \texttt{/api/docs}, специфікація \texttt{docs/api/openapi.json}\\
 \midrule
 \textbf{Моделювання} & 7 UML-діаграм і ER-схема бази (8 таблиць)\\
+\midrule
+\textbf{Репозиторій} & \url{https://github.com/NONAME-lf/studyflow} --- код, CI (GitHub Actions), специфікації\\
 \bottomrule
 \end{tabularx}
 
@@ -274,6 +276,7 @@ Demo-версія за публічним посиланням & етап~5 (T-0
 Потрібно: Node.js 22+, pnpm (\texttt{corepack enable}), Docker.
 \begin{tcolorbox}[colback=lightgray,colframe=lightgray,boxrule=0pt,arc=2pt]
 \small\ttfamily
+git clone https://github.com/NONAME-lf/studyflow.git \&\& cd studyflow\\
 docker compose up -d \hfill \# PostgreSQL, Mailpit\\
 pnpm install\\
 cp apps/api/.env.example apps/api/.env\\
