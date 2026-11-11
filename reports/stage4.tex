@@ -1,10 +1,13 @@
-% Звіт за етапом 4 — ШАБЛОН. Заповнити фактами (див. docs/stage4.md).
-% Червоні [TODO] у PDF = незаповнені місця. Перед здачею їх не має бути.
+% Звіт за етапом 4. Факти — з git log, прогонів тестів (pnpm test:report) і OpenAPI.
+% Згенеровані таблиці: reports/generated/*.tex (pnpm test:report, pnpm openapi:export,
+% python3 reports/sprint_status.py). Червоні [TODO] у PDF = незаповнені місця.
 \documentclass[12pt]{article}
 \input{preamble}
 \usepackage{longtable}
 \usepackage{pdflscape}
 \usepackage{float}
+% \hspace{0pt}: allows hyphenating the first word in narrow table cells
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash\hspace{0pt}}p{#1}}
 \graphicspath{{img/}{../docs/uml/out/}}
 \newcommand{\todo}[1]{\textcolor{red}{\textbf{[TODO: #1]}}}
 % Вставка зображення або TODO, якщо файлу ще немає
@@ -14,78 +17,279 @@
 \IfFileExists{../docs/uml/out/#2}{\includegraphics[width=#1,height=0.7\textheight,keepaspectratio]{#2}}{%
 \fbox{\parbox{0.8\textwidth}{\centering\vspace{1.5cm}\todo{#2}\vspace{1.5cm}}}}}
 \caption{#3}\end{figure}}
+% Два скріншоти поруч
+\newcommand{\figpair}[4]{%
+\begin{figure}[H]\centering
+\begin{minipage}[t]{0.485\textwidth}\centering\includegraphics[width=\linewidth]{#1}\caption{#2}\end{minipage}\hfill
+\begin{minipage}[t]{0.485\textwidth}\centering\includegraphics[width=\linewidth]{#3}\caption{#4}\end{minipage}
+\end{figure}}
 % Вставка згенерованої таблиці або TODO
 \newcommand{\gen}[1]{\IfFileExists{generated/#1}{\input{generated/#1}}{\todo{generated/#1 --- запустити pnpm test:report}}}
 
 \begin{document}
+\setlength{\emergencystretch}{3em}
 \maketitlepage{Звіт за етапом 4}{Реалізація прототипу: UML і схема БД, архітектура, тестування, API-документація}{2026}
 
 \section{Мета етапу}
 Реалізувати прототип StudyFlow в обсязі спринтів 1--3 (етап 3), промоделювати систему в UML, обґрунтувати архітектуру та інструментарій, покрити код модульними та інтеграційними тестами, задокументувати API і провести рефлексію спринта.
 
-\section{План спринта і його виконання}
-\todo{таблиця план (етап 3) vs факт по ID беклогу: ID, назва, SP, статус (Done / перенесено у спринт 4); підсумок SP план/факт}
+\begin{tabularx}{\textwidth}{L{4.2cm} Y}
+\toprule
+\textbf{Обсяг} & Спринти 1--3: 31 елемент беклогу, 68 SP --- виконано всі, включно з Should і Could (розд.~2)\\
+\midrule
+\textbf{Прототип} & Вебзастосунок Next.js + NestJS + PostgreSQL: групи й ролі, предмети, особисті й групові дедлайни, календар тижня і місяця, прогрес групи, канбан задач, e-mail-нагадування\\
+\midrule
+\textbf{Тести} & 40 модульних, 13 інтеграційних, 3 E2E --- усі проходять (розд.~7--8)\\
+\midrule
+\textbf{API} & 34 операції у 8 групах; Swagger UI \texttt{/api/docs}, специфікація \texttt{docs/api/openapi.json}\\
+\midrule
+\textbf{Моделювання} & 7 UML-діаграм і ER-схема бази (8 таблиць)\\
+\bottomrule
+\end{tabularx}
 
-\fig{notion-sprints.png}{Дошка спринтів у Notion}
+\section{План спринта і його виконання}
+Обсяг етапу --- спринти 1--3 плану з етапу~3 (беклог у Notion і \texttt{reports/\allowbreak{}backlog.py}). Порядок реалізації: спершу Must, далі Should, потім Could. Статус кожного елемента визначено за станом репозиторію (\texttt{git log}) і результатами тестів.
+
+\begin{center}{\small\gen{sprint-summary.tex}}\end{center}
+
+{\small\gen{sprint-plan.tex}}
+
+\subsection*{Хронологія реалізації (git log)}
+\begin{tabularx}{\textwidth}{l l Y}
+\toprule
+Коміт & Дата, час & Зміст\\
+\midrule
+\texttt{93d801e} & 10.11, 23:03 & Контекст проєкту: специфікація, беклог, вимоги етапів\\
+\texttt{ed29e22} & 10.11, 23:46 & Каркас: монорепозиторій, схема БД і міграція, сид, Docker Compose, CI (T-01--T-03)\\
+\texttt{c03ced7} & 11.11, 00:16 & Автентифікація, профіль, групи і ролі (US-01, 02, 04, 06--09); UT-01--UT-19\\
+\texttt{a1da9f2} & 11.11, 00:21 & Предмети, дедлайни, відмітка виконання, прогрес (US-10--14, 27); UT-20--UT-28\\
+\texttt{9afcb7e} & 11.11, 00:26 & Задачі канбану і нагадування (US-19--21, 23); UT-29--UT-34\\
+\texttt{828fa41} & 11.11, 00:43 & Інтерфейс (T-04, US-03, 13--17, 19, 21, 27)\\
+\texttt{d9efcde} & 11.11, 00:49 & Інтеграційні та E2E-тести, журнал тестів (T-06, T-07)\\
+\texttt{f073220} & 11.11, 00:53 & UML, ER-схема, скріншоти (T-08)\\
+\bottomrule
+\end{tabularx}
+
+\fig[0.95\textwidth]{notion-sprints.png}{Вид «Спринти» в Notion після оновлення статусів}
 
 \section{Поточна версія системи}
-\todo{2--3 речення: що вміє система зараз}
-\fig{dashboard.png}{Дашборд: найближчі дедлайни}
-\fig{calendar-week.png}{Календар тижня}
-\fig{group.png}{Сторінка групи: групові дедлайни та прогрес}
-\fig{board.png}{Канбан командних задач}
-\fig{mailpit.png}{Лист-нагадування (Mailpit, середовище розробки)}
+Прототип запускається локально (Додаток~В). Староста створює групу, додає предмети й групові дедлайни і роздає код запрошення. Учасник приєднується за кодом, бачить дедлайни групи у своєму календарі та відмічає виконання. Староста бачить, скільки учасників уже виконали кожен дедлайн. Крім того, є особисті дедлайни, фільтри, календар тижня і місяця, канбан командних задач з перетягуванням і нагадування на e-mail. Інтерфейс --- українською. Візуальна мова --- «студентський зошит»: час дедлайну стоїть на полях за червоною лінією, предмет підсвічено його кольором, як маркером, а прострочене позначено «червоною ручкою».
+
+\fig[0.95\textwidth]{dashboard.png}{Мої дедлайни (US-13--15): швидке додавання, фільтри, відмітка виконання, клітинки прогресу групи}
+\figpair{calendar-week.png}{Календар тижня (US-16): дедлайни за днями, колір --- предмет}{group.png}{Сторінка групи (US-09, 10, 12, 27): код запрошення, дедлайни з прогресом}
+\figpair{board.png}{Канбан командних задач (US-19--21)}{mailpit.png}{Лист-нагадування (US-23) у Mailpit --- пошті середовища розробки}
 
 \section{Архітектура системи та інструментарій}
 \subsection{Архітектура}
-\todo{модульний моноліт; шари Controller -- Service -- Prisma; модулі; same-origin через rewrites Next.js}
-\fig{component.png}{Діаграма компонентів}
-\fig{deployment.png}{Діаграма розгортання}
+\begin{itemize}[leftmargin=1.2em,itemsep=2pt]
+  \item \textbf{Модульний моноліт.} Один бекенд-застосунок NestJS з модулями \texttt{auth}, \texttt{users}, \texttt{groups}, \texttt{subjects}, \texttt{deadlines}, \texttt{tasks}, \texttt{reminders}, \texttt{mail}, \texttt{health}. Шари: Controller (HTTP, DTO, Swagger) $\to$ Service (бізнес-правила) $\to$ PrismaService (доступ до БД). Для двох розробників і одного домену мікросервіси дали б лише накладні витрати на інфраструктуру.
+  \item \textbf{Доступ.} Глобальний \texttt{JwtAuthGuard} закриває всі маршрути, крім позначених \texttt{@Public()}. \texttt{GroupRoleGuard} з декоратором \texttt{@GroupRoles(HEADMAN)} перевіряє членство і роль на маршрутах \texttt{/groups/:groupId/*}: не-учасник отримує 403, учасник на дії старости --- 403. Сервіси повторно перевіряють права для операцій без \texttt{groupId} у шляху (наприклад, \texttt{PATCH /deadlines/:id}).
+  \item \textbf{Автентифікація.} Access-токен (JWT, 15~хв) повертається в тілі відповіді і зберігається лише в пам'яті клієнта. Refresh-токен (7~днів) --- у httpOnly cookie, з ротацією; у БД --- лише його SHA-256-хеш. Паролі --- bcrypt.
+  \item \textbf{Same-origin.} Браузер звертається до \texttt{/api/*} на домені вебзастосунку, Next.js проксіює запити до NestJS (rewrites), тому cookie працюють без CORS. \texttt{proxy.ts} (Next.js~16) перенаправляє на \texttt{/login}, якщо cookie немає.
+  \item \textbf{Клієнт.} Сторінки --- клієнтські компоненти; дані --- TanStack Query (кеш, оптимістичні відмітки виконання і перетягування задач). Типи запитів і відповідей генеруються з OpenAPI-специфікації бекенду --- це «спільні типи» монорепозиторію.
+  \item \textbf{Нагадування.} Cron (\texttt{REMINDER\_CRON}, щогодини) вибирає пари «користувач --- дедлайн» у вікні N днів і надсилає листи через Nodemailer; таблиця \texttt{reminder\_logs} не дає надіслати лист двічі.
+\end{itemize}
+
+\fig[0.95\textwidth]{component.png}{Діаграма компонентів}
+\fig[0.95\textwidth]{deployment.png}{Діаграма розгортання: середовище розробки і цільовий prod (етап 5)}
 
 \subsection{Обґрунтування інструментарію}
-\todo{таблиця: інструмент --- роль --- чому --- відкинута альтернатива (Next.js, NestJS, PostgreSQL, Prisma, JWT, Tailwind/shadcn, TanStack Query, Vitest, supertest, Playwright, Docker Compose, GitHub Actions, Mailpit, PlantUML, Notion)}
+{\small
+\begin{longtable}{@{}L{2.9cm} L{3.1cm} L{5.7cm} L{3.6cm}@{}}
+\toprule
+Інструмент & Роль & Чому & Відкинута альтернатива\\
+\midrule\endhead
+Next.js 16 & Вебклієнт & Маршрутизація за файлами, rewrites для same-origin API, proxy для редіректів & Vite + React Router: проксі і збірку довелося б налаштовувати окремо\\
+NestJS 12 & REST API & Модулі, DI, guards, pipes і Swagger з коробки --- структура однакова в усіх модулях & Express: структуру й валідацію писали б вручну\\
+TypeScript 6 (strict) & Мова фронтенду і бекенду & Одна мова, типи API генеруються з OpenAPI & JavaScript: без перевірки типів\\
+PostgreSQL 16 & База даних & Зв'язки «багато-до-багатьох» (учасники, відмітки), транзакції, індекси & MongoDB: незручні зв'язки між документами\\
+Prisma 7 & ORM, міграції, сид & Схема --- єдине джерело правди, типізовані запити & TypeORM: слабша типізація запитів\\
+JWT (access + refresh) & Автентифікація & Access у пам'яті не викрасти з localStorage через XSS; refresh у httpOnly cookie з ротацією & Серверні сесії: потрібне сховище сесій\\
+Tailwind CSS 4, shadcn/ui (Radix) & Інтерфейс & Доступні компоненти, код компонентів у репозиторії, власна тема & Material UI: важко змінити вигляд\\
+TanStack Query & Дані на клієнті & Кеш, повтор запитів, оптимістичні оновлення & Redux: багато шаблонного коду\\
+react-hook-form + zod & Форми & Валідація схемами, мало перерендерів & Formik\\
+dnd-kit & Перетягування & Підтримка клавіатури, React 19 & react-beautiful-dnd: більше не підтримується\\
+openapi-typescript + openapi-fetch & Спільні типи & Розбіжність API і клієнта видно на typecheck & Ручні інтерфейси\\
+Vitest + vitest-mock-extended & Модульні й інтеграційні тести & Стандарт шаблону NestJS~12 (ESM); API як у Jest & Jest: підтримка ESM експериментальна\\
+supertest & HTTP в інтеграційних тестах & Запити до застосунку Nest без мережі & Postman / Newman\\
+Playwright & E2E, скріншоти & Кілька незалежних браузерних контекстів (староста й учасник), автоочікування & Cypress: одна вкладка\\
+Docker Compose & Середовище & PostgreSQL і Mailpit однією командою; профіль \texttt{full} --- увесь стек у контейнерах & Локальна інсталяція PostgreSQL\\
+Mailpit & Пошта в розробці & Листи видно в браузері, жодних реальних адрес & Зовнішній Mailtrap\\
+GitHub Actions & CI & lint, typecheck, unit, міграції, integration, build на кожен pull request & GitLab CI\\
+PlantUML & UML & Діаграми як код поруч із кодом, рендер у Docker & draw.io: бінарні файли\\
+Notion & Беклог, спринти & Одна база --- кілька видів (Kanban, Спринти, Ейзенхауер) & Jira: надмірна для двох осіб\\
+pnpm workspaces & Монорепозиторій & Один lockfile, спільні скрипти & Nx: зайва складність\\
+\bottomrule
+\end{longtable}}
+
+\subsection{Відхилення від рішень етапів 0--3}
+\begin{tabularx}{\textwidth}{L{3.3cm} L{3.4cm} Y}
+\toprule
+Рішення & Було & Стало і чому\\
+\midrule
+Тестовий фреймворк & Jest & Vitest: NestJS~12 працює лише як ESM, а його стандартний шаблон тестів --- Vitest. Синтаксис тестів той самий\\
+Версії & «Останні стабільні» & TypeScript 6.0 замість 7.0 і ESLint 9 замість 10: typescript-eslint, @nestjs/cli і eslint-config-next ще не підтримують нові версії\\
+Docker Compose (T-02) & PostgreSQL + backend + frontend & Для розробки --- PostgreSQL і Mailpit, api і web у профілі \texttt{full}; Dockerfile API стане основою деплою (етап~5)\\
+Особисті дедлайни (US-11) & Предмет лише в групових & Особистому дедлайну можна обрати предмет будь-якої групи автора --- як і обіцяє картка US-11\\
+Хеш refresh-токена & bcrypt & SHA-256: bcrypt обробляє лише перші 72 байти, а JWT довший\\
+\bottomrule
+\end{tabularx}
 
 \section{UML-моделювання}
-\fig{use-case.png}{Діаграма варіантів використання}
-\fig{class.png}{Діаграма класів доменної моделі}
-\fig{sequence-group-deadline.png}{Послідовність: груповий дедлайн}
-\fig{sequence-reminders.png}{Послідовність: надсилання нагадувань}
-\fig{state.png}{Діаграма станів задачі / дедлайну}
+Діаграми описані в PlantUML (\texttt{docs/uml/*.puml}) і зібрані з реального коду; PNG генерує \texttt{pnpm uml}.
+
+\fig[0.62\textwidth]{use-case.png}{Діаграма варіантів використання}
+\fig[0.95\textwidth]{class.png}{Діаграма класів доменної моделі}
+\fig[0.95\textwidth]{sequence-group-deadline.png}{Послідовність: староста створює груповий дедлайн, учасник відмічає виконання, староста бачить прогрес}
+\fig[0.85\textwidth]{sequence-reminders.png}{Послідовність: розсилка нагадувань (правила R1--R3)}
+\fig[0.95\textwidth]{state.png}{Діаграма станів: статус дедлайну для користувача і задача канбану}
 
 \section{Схема бази даних}
-\fig{er.png}{ER-діаграма бази даних}
-\todo{таблиця сутностей: таблиця --- призначення --- ключові поля --- зв'язки}
+\fig[0.85\textwidth]{er.png}{ER-діаграма бази даних}
+
+{\small
+\begin{longtable}{@{}L{3.1cm} L{3.4cm} L{4.6cm} L{4.1cm}@{}}
+\toprule
+Таблиця & Призначення & Ключові поля & Зв'язки\\
+\midrule\endhead
+\texttt{users} & Користувачі & \texttt{email} (UQ), \texttt{password\_hash}, \texttt{refresh\_token\_hash}, налаштування нагадувань & 1:N членства, дедлайни (автор), відмітки, задачі\\
+\texttt{groups} & Навчальні групи & \texttt{name}, \texttt{invite\_code} (UQ) & 1:N учасники, предмети, дедлайни, задачі\\
+\texttt{group\_\allowbreak{}members} & Членство і роль & PK (\texttt{group\_id}, \texttt{user\_id}), \texttt{role} & N:1 групи, користувачі\\
+\texttt{subjects} & Предмети групи & \texttt{name} (UQ у групі), \texttt{teacher}, \texttt{color} & N:1 групи; 1:N дедлайни\\
+\texttt{deadlines} & Дедлайни & \texttt{title}, \texttt{due\_at}, \texttt{priority}, \texttt{group\_id} (NULL --- особистий) & N:1 автор, група, предмет; 1:N відмітки, задачі\\
+\texttt{deadline\_\allowbreak{}completions} & Особисті відмітки виконання & PK (\texttt{deadline\_id}, \texttt{user\_id}), \texttt{completed\_at} & N:1 дедлайни, користувачі\\
+\texttt{tasks} & Задачі канбану & \texttt{status}, \texttt{position}, \texttt{assignee\_id}, \texttt{deadline\_id} & N:1 група, виконавець, автор, дедлайн\\
+\texttt{reminder\_\allowbreak{}logs} & Надіслані нагадування & PK (\texttt{deadline\_id}, \texttt{user\_id}), \texttt{sent\_at} & N:1 дедлайни, користувачі\\
+\bottomrule
+\end{longtable}}
+Видалення групи каскадно видаляє її учасників, предмети, дедлайни і задачі. Після видалення предмета дедлайни залишаються з порожнім предметом (\texttt{SET NULL}). Індекси (\texttt{group\_id}, \texttt{due\_at}) і (\texttt{owner\_id}, \texttt{due\_at}) обслуговують головний запит --- список видимих дедлайнів, відсортований за терміном.
 
 \section{Модульні тести}
-\todo{підхід: Vitest (NestJS 12 --- лише ESM), що мокається; підсумок}
-\gen{summary.tex}
-\gen{coverage.tex}
-Повний журнал --- Додаток А.
+Модульні тести перевіряють бізнес-правила сервісів (специфікація, розд.~2: A1--A4, G1--G7, D1--D7, K2--K3, R1--R3). Prisma замокано через \texttt{vitest-mock-extended} (\texttt{mockDeep<PrismaService>()}); сервіс створюється напряму, без Nest DI. Тест задає відповіді «бази» і перевіряє результат, виняток або сформований запит. JWT і bcrypt --- справжні. Назва тесту починається з ID з тест-плану (\texttt{UT-05 wrong password …}), за ним скрипт \texttt{pnpm test:report} будує журнал.
+
+\begin{center}{\small\gen{summary.tex}}\end{center}
+
+\subsection*{Покриття коду}
+{\small\gen{coverage.tex}}
+
+\medskip
+Модульні тести покривають сервіси з бізнес-правилами; контролери, guard-и й налаштування застосунку працюють в інтеграційних тестах. Тому покриття модульних тестів нижче, ніж інтеграційних. Повний журнал модульних тестів --- Додаток~А.
 
 \section{Інтеграційні та E2E-тести}
-\todo{підхід: тестова БД studyflow\_test, stub пошти, Playwright}
-\gen{integration.tex}
-\gen{e2e.tex}
+\textbf{Інтеграційні} (Vitest + supertest) піднімають увесь застосунок Nest з \texttt{AppModule} і звертаються до нього HTTP-запитами. База --- справжня, \texttt{studyflow\_test}: перед прогоном застосовуються міграції, перед кожним тестом таблиці очищаються, причому скрипт відмовляється чистити базу, назва якої не закінчується на \texttt{\_test}. Пошту замінено заглушкою в пам'яті (\texttt{overrideProvider(MailService)}), тож IT-12 рахує листи без SMTP. Інтеграційні тести входять у CI (сервіс PostgreSQL у GitHub Actions).
+
+\textbf{E2E} (Playwright, Chromium) проходять сценарії в браузері проти запущеного застосунку. E2E-01 --- сценарій із Definition of Done етапу~3: староста і учасник працюють у двох незалежних браузерних контекстах.
+
+\subsection*{Інтеграційні тести}
+{\small\gen{integration.tex}}
+\subsection*{E2E-тести}
+{\small\gen{e2e.tex}}
 
 \section{API-документація}
-\todo{Swagger UI на /api/docs, openapi.json у репозиторії; кількість ендпоінтів і тегів}
-\fig{swagger.png}{Swagger UI}
-Повний перелік ендпоінтів --- Додаток Б.
+Документація генерується з коду декораторами \texttt{@nestjs/swagger}: кожна операція має опис (\texttt{@ApiOperation}), відповіді з кодами помилок, DTO з прикладами і схему доступу (Bearer або cookie).
+\begin{itemize}[leftmargin=1.2em,itemsep=1pt]
+  \item Swagger UI --- \texttt{http://localhost:3001/api/docs}; JSON --- \texttt{/api/docs-json}.
+  \item Специфікація в репозиторії --- файл \texttt{docs/\allowbreak{}api/\allowbreak{}openapi.json}; його оновлює \texttt{pnpm openapi:export}, з нього ж генеруються типи фронтенду.
+  \item Помилки --- стандартний формат NestJS \texttt{\{statusCode, message, error\}}; повідомлення --- українською.
+\end{itemize}
+
+\begin{center}
+\begin{tabular}{@{}llr@{}}
+\toprule
+Тег & Призначення & Операцій\\
+\midrule
+\texttt{auth} & Реєстрація, вхід, токени & 5\\
+\texttt{users} & Профіль & 2\\
+\texttt{groups} & Групи, учасники, ролі, коди & 8\\
+\texttt{subjects} & Предмети & 4\\
+\texttt{deadlines} & Дедлайни, відмітки, прогрес & 9\\
+\texttt{tasks} & Канбан & 4\\
+\texttt{dev} & Ручний запуск нагадувань (лише dev) & 1\\
+\texttt{health} & Стан сервісу & 1\\
+\midrule
+\textbf{Разом} & & \textbf{34}\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\fig[0.95\textwidth]{swagger.png}{Swagger UI}
+Повний перелік ендпоінтів --- Додаток~Б.
 
 \section{Рефлексія спринта}
-\todo{лише факти (git log, Notion, тести). Успіхи / Неуспіхи / Причини / Висновки і дії на спринт 4}
+\subsection*{Успіхи}
+\begin{itemize}[leftmargin=1.2em,itemsep=2pt]
+  \item Усі 31 елемент спринтів 1--3 (68 SP) --- Done, включно з Should (US-04, 09, 17, 19, 20, 23, 27, T-03) і Could (US-21, перетягування в канбані).
+  \item Тестів більше, ніж у плані: 40 модульних (план $\geq$20, ціль 30+), 13 інтеграційних (ціль $\geq$10), 3 E2E. Сценарій із Definition of Done автоматизовано (E2E-01).
+  \item Специфікація з пронумерованими бізнес-правилами і тест-план з ID дали ланцюжок «правило $\to$ тест $\to$ журнал». Таблиці звіту генеруються з прогонів, а не переписуються вручну.
+  \item Середовище розробки з першого коміту: Docker Compose, міграції, ідемпотентний сид з демо-даними, CI-конфігурація.
+\end{itemize}
+\subsection*{Неуспіхи}
+\begin{itemize}[leftmargin=1.2em,itemsep=2pt]
+  \item Реалізація почалася 10.11 замість 28.10. За планом спринти 1--2 мали дати каркас, автентифікацію, групи і дедлайни, а весь обсяг довелося стиснути в кінець спринту~3.
+  \item Процес у git не відповідав правилам етапу~2: працювали парно з одного ноутбука, тому всі коміти --- з одного акаунта, без feature-гілок і pull request з рев'ю. Розподіл за RACI в історії не видно.
+  \item CI налаштовано, але перший прогін у GitHub Actions можливий лише після публікації репозиторію; до того ті самі перевірки запускали локально.
+  \item Модульні тести покривають 54\,\% рядків: контролери і guard-и перевіряються лише інтеграційними тестами.
+\end{itemize}
+\subsection*{Причини}
+\begin{itemize}[leftmargin=1.2em,itemsep=2pt]
+  \item Спринти 1--2 (28.10--10.11) фактично пішли на документацію етапів 2--3: звіти, простір у Notion, презентації.
+  \item Дедлайн етапу~4 перенесено з 18.11 на 15.11 --- на 3~дні раніше, ніж у плані етапу~3, тож запасу часу не залишилося.
+\end{itemize}
+\subsection*{Висновки і дії на спринт 4}
+\begin{itemize}[leftmargin=1.2em,itemsep=2pt]
+  \item Опублікувати репозиторій і перевести роботу на правила етапу~2: кожна задача --- у feature-гілці з власного акаунта, pull request з рев'ю другого учасника, злиття лише після зеленого CI.
+  \item Деплой (T-09) --- першим, на початку спринту: публічне посилання потрібне для Definition of Done і пілоту.
+  \item Статуси в Notion оновлювати після кожного злиття, а не перед захистом.
+  \item Модульні тести для контролерів і guard-ів --- ціль $\geq$70\,\% рядків.
+  \item US-24 (налаштування нагадувань --- поля в БД уже є) і US-28 (особиста статистика) --- у спринт~4.
+\end{itemize}
 
 \section{Висновки і наступні кроки}
-\todo{підсумок + етап 5: деплой (T-09), US-24, US-28, перенесене}
+Прототип StudyFlow реалізує весь обсяг спринтів 1--3: групи з ролями й кодами запрошення, предмети, особисті й групові дедлайни з особистими відмітками і прогресом групи, календар тижня і місяця, канбан задач і e-mail-нагадування. Систему промодельовано в UML, базу описано ER-схемою, API задокументовано в Swagger, код покрито модульними, інтеграційними та E2E-тестами.
+
+\begin{tabularx}{\textwidth}{Y L{5.4cm}}
+\toprule
+Критерій Definition of Done (етап 3) & Стан\\
+\midrule
+Усі Must-елементи спринтів 1--3 у Done & виконано (22 з 22)\\
+$\geq$20 модульних тестів у CI, журнал результатів & 40 тестів, журнал --- Додаток~А; CI --- після публікації репозиторію\\
+Інтеграційні/E2E: реєстрація $\to$ група $\to$ груповий дедлайн $\to$ відмітка виконання & IT-05--IT-08, E2E-01\\
+Swagger за \texttt{/api/docs} & виконано, 34 операції\\
+UML (use case, class, sequence) та ER-схема у звіті & виконано, розд.~5--6\\
+Demo-версія за публічним посиланням & етап~5 (T-09), до 01.12\\
+\bottomrule
+\end{tabularx}
+
+\medskip
+\textbf{Етап 5 (до 01.12.2026):} деплой web на Vercel, API --- на Railway або Render з керованим PostgreSQL (T-09); налаштування нагадувань (US-24) і особиста статистика (US-28); пілот у групі МІ-41; фінальний звіт і презентація модуля (D-03).
 
 \appendix
 \section{Журнал модульних тестів}
-\gen{unit.tex}
+{\small\gen{unit.tex}}
 
 \section{Перелік ендпоінтів API}
-\todo{таблиця: метод, шлях, доступ, опис, ID беклогу}
+{\small\gen{endpoints.tex}}
 
 \section{Інструкція запуску}
-\todo{docker compose up -d; pnpm install; pnpm db:reset; pnpm dev; демо-акаунти}
+Потрібно: Node.js 22+, pnpm (\texttt{corepack enable}), Docker.
+\begin{tcolorbox}[colback=lightgray,colframe=lightgray,boxrule=0pt,arc=2pt]
+\small\ttfamily
+docker compose up -d \hfill \# PostgreSQL, Mailpit\\
+pnpm install\\
+cp apps/api/.env.example apps/api/.env\\
+pnpm db:reset \hfill \# міграції + демо-дані\\
+pnpm dev \hfill \# API :3001, web :3000
+\end{tcolorbox}
+
+\begin{tabularx}{\textwidth}{L{4.6cm} Y}
+\toprule
+Застосунок & \texttt{http://localhost:3000}\\
+Swagger UI & \texttt{http://localhost:3001/api/docs}\\
+Листи (Mailpit) & \texttt{http://localhost:8025}\\
+Демо-акаунти & \texttt{starosta@studyflow.dev} (староста), \texttt{artem@studyflow.dev}, \texttt{olena@studyflow.dev}, \texttt{andrii@studyflow.dev}; пароль \texttt{Demo1234!}; група «МІ-41», код \texttt{STUDY424}\\
+Тести & \texttt{pnpm test}, \texttt{pnpm test:int}, \texttt{pnpm test:e2e}; журнал --- \texttt{pnpm test:report}\\
+Усе в Docker & \texttt{docker compose -{}-profile full up -d -{}-build}\\
+\bottomrule
+\end{tabularx}
 
 \end{document}

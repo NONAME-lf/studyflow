@@ -79,11 +79,10 @@ pnpm openapi:export           # → docs/api/openapi.json + apps/web/lib/api/sch
 pnpm build
 pnpm format
 docker compose --profile full up -d --build   # усе в контейнерах
-
-# з'являться у наступних фазах:
-pnpm uml                      # docs/uml/*.puml → docs/uml/out/*.png — P7
-pnpm screenshots              # Playwright → reports/img/*.png — P7
-cd reports && ./build.sh stage4   # PDF (потрібен повний MacTeX)
+pnpm uml                      # docs/uml/*.puml → docs/uml/out/*.png (Docker plantuml/plantuml)
+pnpm screenshots              # Playwright, перезасіває демо-дані → reports/img/*.png
+python3 reports/sprint_status.py   # план vs факт спринтів → reports/generated/sprint-*.tex
+cd reports && ./build.sh stage4 stage4-slides guide-stage4   # PDF → reports/build/
 ```
 
 ## Трасованість (для звітів і захисту)

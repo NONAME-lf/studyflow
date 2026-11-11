@@ -1,0 +1,40 @@
+\begin{longtable}{@{}l L{6.4cm} L{5.4cm} c@{}}
+\toprule
+Метод & Шлях & Опис & Доступ\\
+\midrule\endhead
+\texttt{POST} & \texttt{/\allowbreak{}api/\allowbreak{}auth/\allowbreak{}login} & Вхід & —\\
+\texttt{POST} & \texttt{/\allowbreak{}api/\allowbreak{}auth/\allowbreak{}logout} & Вихід & Bearer\\
+\texttt{GET} & \texttt{/\allowbreak{}api/\allowbreak{}auth/\allowbreak{}me} & Поточний користувач & Bearer\\
+\texttt{POST} & \texttt{/\allowbreak{}api/\allowbreak{}auth/\allowbreak{}refresh} & Оновлення токенів & cookie\\
+\texttt{POST} & \texttt{/\allowbreak{}api/\allowbreak{}auth/\allowbreak{}register} & Реєстрація (одразу виконує вхід) & —\\
+\texttt{PATCH} & \texttt{/\allowbreak{}api/\allowbreak{}users/\allowbreak{}me} & Змінити ім'я & Bearer\\
+\texttt{PATCH} & \texttt{/\allowbreak{}api/\allowbreak{}users/\allowbreak{}me/\allowbreak{}password} & Змінити пароль & Bearer\\
+\texttt{POST} & \texttt{/\allowbreak{}api/\allowbreak{}groups} & Створити групу & Bearer\\
+\texttt{GET} & \texttt{/\allowbreak{}api/\allowbreak{}groups} & Мої групи і моя роль в кожній & Bearer\\
+\texttt{GET} & \texttt{/\allowbreak{}api/\allowbreak{}groups/\allowbreak{}\{groupId\}} & Деталі групи & Bearer\\
+\texttt{POST} & \texttt{/\allowbreak{}api/\allowbreak{}groups/\allowbreak{}\{groupId\}/\allowbreak{}invite-code} & Перегенерувати код запрошення & Bearer\\
+\texttt{GET} & \texttt{/\allowbreak{}api/\allowbreak{}groups/\allowbreak{}\{groupId\}/\allowbreak{}members} & Учасники групи & Bearer\\
+\texttt{PATCH} & \texttt{/\allowbreak{}api/\allowbreak{}groups/\allowbreak{}\{groupId\}/\allowbreak{}members/\allowbreak{}\{userId\}} & Змінити роль учасника & Bearer\\
+\texttt{DELETE} & \texttt{/\allowbreak{}api/\allowbreak{}groups/\allowbreak{}\{groupId\}/\allowbreak{}members/\allowbreak{}\{userId\}} & Видалити учасника або вийти з групи & Bearer\\
+\texttt{POST} & \texttt{/\allowbreak{}api/\allowbreak{}groups/\allowbreak{}join} & Приєднатися за кодом запрошення & Bearer\\
+\texttt{GET} & \texttt{/\allowbreak{}api/\allowbreak{}groups/\allowbreak{}\{groupId\}/\allowbreak{}subjects} & Предмети групи & Bearer\\
+\texttt{POST} & \texttt{/\allowbreak{}api/\allowbreak{}groups/\allowbreak{}\{groupId\}/\allowbreak{}subjects} & Додати предмет & Bearer\\
+\texttt{PATCH} & \texttt{/\allowbreak{}api/\allowbreak{}groups/\allowbreak{}\{groupId\}/\allowbreak{}subjects/\allowbreak{}\{subjectId\}} & Змінити предмет & Bearer\\
+\texttt{DELETE} & \texttt{/\allowbreak{}api/\allowbreak{}groups/\allowbreak{}\{groupId\}/\allowbreak{}subjects/\allowbreak{}\{subjectId\}} & Видалити предмет & Bearer\\
+\texttt{GET} & \texttt{/\allowbreak{}api/\allowbreak{}deadlines} & Видимі дедлайни & Bearer\\
+\texttt{POST} & \texttt{/\allowbreak{}api/\allowbreak{}deadlines} & Створити особистий дедлайн & Bearer\\
+\texttt{GET} & \texttt{/\allowbreak{}api/\allowbreak{}deadlines/\allowbreak{}\{id\}} & Деталі дедлайну & Bearer\\
+\texttt{PATCH} & \texttt{/\allowbreak{}api/\allowbreak{}deadlines/\allowbreak{}\{id\}} & Змінити дедлайн & Bearer\\
+\texttt{DELETE} & \texttt{/\allowbreak{}api/\allowbreak{}deadlines/\allowbreak{}\{id\}} & Видалити дедлайн & Bearer\\
+\texttt{PUT} & \texttt{/\allowbreak{}api/\allowbreak{}deadlines/\allowbreak{}\{id\}/\allowbreak{}completion} & Відмітити виконаним & Bearer\\
+\texttt{DELETE} & \texttt{/\allowbreak{}api/\allowbreak{}deadlines/\allowbreak{}\{id\}/\allowbreak{}completion} & Зняти відмітку виконання & Bearer\\
+\texttt{GET} & \texttt{/\allowbreak{}api/\allowbreak{}deadlines/\allowbreak{}\{id\}/\allowbreak{}progress} & Прогрес групи по дедлайну & Bearer\\
+\texttt{POST} & \texttt{/\allowbreak{}api/\allowbreak{}groups/\allowbreak{}\{groupId\}/\allowbreak{}deadlines} & Створити груповий дедлайн & Bearer\\
+\texttt{GET} & \texttt{/\allowbreak{}api/\allowbreak{}groups/\allowbreak{}\{groupId\}/\allowbreak{}tasks} & Задачі канбану групи & Bearer\\
+\texttt{POST} & \texttt{/\allowbreak{}api/\allowbreak{}groups/\allowbreak{}\{groupId\}/\allowbreak{}tasks} & Створити задачу & Bearer\\
+\texttt{PATCH} & \texttt{/\allowbreak{}api/\allowbreak{}tasks/\allowbreak{}\{id\}} & Змінити задачу або перемістити її & Bearer\\
+\texttt{DELETE} & \texttt{/\allowbreak{}api/\allowbreak{}tasks/\allowbreak{}\{id\}} & Видалити задачу & Bearer\\
+\texttt{POST} & \texttt{/\allowbreak{}api/\allowbreak{}dev/\allowbreak{}reminders/\allowbreak{}run} & Запустити розсилку нагадувань зараз & —\\
+\texttt{GET} & \texttt{/\allowbreak{}api/\allowbreak{}health} & Стан API та підключення до бази даних & —\\
+\bottomrule
+\end{longtable}

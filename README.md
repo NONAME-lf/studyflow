@@ -45,9 +45,13 @@ pnpm dev                                 # api :3001, web :3000
 | `pnpm lint` | Prettier (перевірка) + ESLint |
 | `pnpm typecheck` | TypeScript в обох застосунках |
 | `pnpm test` | модульні тести API (Vitest) |
+| `pnpm test:int` | інтеграційні тести (база `studyflow_test`) |
+| `pnpm test:e2e` | E2E-тести (Playwright) |
+| `pnpm test:report` | усі тести + покриття → таблиці для звіту |
 | `pnpm db:migrate` / `db:seed` / `db:reset` | нова міграція / демо-дані / скидання БД + сид |
 | `pnpm openapi:export` | `docs/api/openapi.json` + типи для web |
 | `pnpm build` | production-збірка |
+| `pnpm uml` / `pnpm screenshots` | діаграми PlantUML / скріншоти для звіту |
 | `pnpm format` | форматування Prettier |
 
 ## Структура

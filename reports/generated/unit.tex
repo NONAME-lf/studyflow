@@ -1,16 +1,16 @@
-\begin{longtable}{@{}l L{6.3cm} L{3.2cm} c c r@{}}
+\begin{longtable}{@{}l L{4.8cm} L{3.7cm} c c r@{}}
 \toprule
 ID & Що перевіряє & Модуль & Правило & Статус & мс\\
 \midrule\endhead
-UT-01 & реєстрація зберігає bcrypt-хеш, не пароль & AuthService & A2 & \textcolor{teal}{пройдено} & 153\\
+UT-01 & реєстрація зберігає bcrypt-хеш, не пароль & AuthService & A2 & \textcolor{teal}{пройдено} & 145\\
 UT-02 & дубль email → ConflictException & AuthService & A1 & \textcolor{teal}{пройдено} & 2\\
-UT-03 & email нормалізується до lower-case & AuthService & A1 & \textcolor{teal}{пройдено} & 77\\
+UT-03 & email нормалізується до lower-case & AuthService & A1 & \textcolor{teal}{пройдено} & 73\\
 UT-04 & вхід з вірними даними → пара токенів & AuthService & A3 & \textcolor{teal}{пройдено} & 4\\
 UT-05 & невірний пароль → Unauthorized & AuthService & A3 & \textcolor{teal}{пройдено} & 3\\
-UT-06 & невідомий email → те саме повідомлення & AuthService & A3 & \textcolor{teal}{пройдено} & 77\\
-UT-07 & refresh з чужим/старим токеном → Unauthorized & AuthService & A4 & \textcolor{teal}{пройдено} & 4\\
+UT-06 & невідомий email → те саме повідомлення & AuthService & A3 & \textcolor{teal}{пройдено} & 73\\
+UT-07 & refresh з чужим/старим токеном → Unauthorized & AuthService & A4 & \textcolor{teal}{пройдено} & 3\\
 UT-08 & refresh ротує хеш токена & AuthService & A4 & \textcolor{teal}{пройдено} & 3\\
-UT-09 & довжина 8 і лише дозволений алфавіт & InviteCode & G2 & \textcolor{teal}{пройдено} & 12\\
+UT-09 & довжина 8 і лише дозволений алфавіт & InviteCode & G2 & \textcolor{teal}{пройдено} & 13\\
 UT-10 & повтор генерації при колізії коду & GroupsService & G2 & \textcolor{teal}{пройдено} & 2\\
 UT-11 & творець групи — HEADMAN & GroupsService & G1 & \textcolor{teal}{пройдено} & 2\\
 UT-12 & приєднання за кодом → MEMBER & GroupsService & G3 & \textcolor{teal}{пройдено} & 1\\
@@ -21,7 +21,7 @@ UT-16 & вихід останнього старости → BadRequest & Groups
 UT-17 & HEADMAN пропускається & GroupRoleGuard & G4 & \textcolor{teal}{пройдено} & 2\\
 UT-18 & MEMBER на дію старости → Forbidden & GroupRoleGuard & G4 & \textcolor{teal}{пройдено} & 1\\
 UT-19 & не-учасник → Forbidden/NotFound & GroupRoleGuard & G7 & \textcolor{teal}{пройдено} & 0\\
-UT-20 & особистий: owner = автор, groupId = null & DeadlinesService & D1 & \textcolor{teal}{пройдено} & 3\\
+UT-20 & особистий: owner = автор, groupId = null & DeadlinesService & D1 & \textcolor{teal}{пройдено} & 2\\
 UT-21 & груповий від MEMBER → Forbidden & DeadlinesService & D2 & \textcolor{teal}{пройдено} & 1\\
 UT-22 & предмет іншої групи → BadRequest & DeadlinesService & D3 & \textcolor{teal}{пройдено} & 0\\
 UT-23 & статус done / overdue / pending & DeadlinesService & D4 & \textcolor{teal}{пройдено} & 0\\
@@ -29,14 +29,14 @@ UT-24 & список: лише видимі, сортування за dueAt & D
 UT-25 & відмітка виконання ідемпотентна & DeadlinesService & D6 & \textcolor{teal}{пройдено} & 1\\
 UT-26 & відмітка невидимого → NotFound & DeadlinesService & D6 & \textcolor{teal}{пройдено} & 0\\
 UT-27 & 2 з 4 → 50 \% & ProgressService & D7 & \textcolor{teal}{пройдено} & 3\\
-UT-28 & 0 учасників → 0 \% & ProgressService & D7 & \textcolor{teal}{пройдено} & 0\\
-UT-29 & виконавець не з групи → BadRequest & TasksService & K3 & \textcolor{teal}{пройдено} & 3\\
+UT-28 & 0 учасників → 0 \% & ProgressService & D7 & \textcolor{teal}{пройдено} & 1\\
+UT-29 & виконавець не з групи → BadRequest & TasksService & K3 & \textcolor{teal}{пройдено} & 2\\
 UT-30 & зміна статусу/позиції & TasksService & K2 & \textcolor{teal}{пройдено} & 2\\
 UT-31 & вибирає лише дедлайни у вікні N днів & RemindersService & R1 & \textcolor{teal}{пройдено} & 2\\
-UT-32 & пропускає виконані та reminderEnabled = false & RemindersService & R1 & \textcolor{teal}{пройдено} & 2\\
+UT-32 & пропускає виконані та reminderEnabled = false & RemindersService & R1 & \textcolor{teal}{пройдено} & 1\\
 UT-33 & не шле повторно (є ReminderLog) & RemindersService & R2 & \textcolor{teal}{пройдено} & 1\\
 UT-34 & помилка одного листа не зупиняє інші & RemindersService & R3 & \textcolor{teal}{пройдено} & 1\\
-UT-35 & БД відповідає → status: ok & HealthService & — & \textcolor{teal}{пройдено} & 6\\
+UT-35 & БД відповідає → status: ok & HealthService & — & \textcolor{teal}{пройдено} & 3\\
 UT-36 & БД недоступна → 503 & HealthService & — & \textcolor{teal}{пройдено} & 1\\
 UT-37 & зміна імені: обрізаються пробіли, без хешу пароля у відповіді & UsersService & US-04 & \textcolor{teal}{пройдено} & 3\\
 UT-38 & зміна пароля з невірним поточним → BadRequest & UsersService & US-04 & \textcolor{teal}{пройдено} & 2\\

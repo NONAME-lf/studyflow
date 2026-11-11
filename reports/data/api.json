@@ -1,0 +1,14 @@
+{
+  "operations": 34,
+  "paths": 24,
+  "tags": {
+    "auth": 5,
+    "users": 2,
+    "groups": 8,
+    "subjects": 4,
+    "deadlines": 9,
+    "tasks": 4,
+    "dev": 1,
+    "health": 1
+  }
+}

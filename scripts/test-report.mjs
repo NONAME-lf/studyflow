@@ -153,7 +153,7 @@ if (unit) {
   writeFileSync(
     join(outDir, 'unit.tex'),
     longtable(
-      'l L{6.3cm} L{3.2cm} c c r',
+      'l L{4.8cm} L{3.7cm} c c r',
       ['ID', 'Що перевіряє', 'Модуль', 'Правило', 'Статус', 'мс'],
       unit.rows.map((r) => {
         const p = plan.get(r.id);
@@ -230,7 +230,10 @@ if (coverage) {
         (k) => `${names[k]} & ${coverage.total[k].pct.toFixed(1)} & ${intTotal(k)}\\\\`,
       ),
       '\\bottomrule',
-      '\\end{tabular}\\hfill',
+      '\\end{tabular}',
+      '',
+      '\\medskip',
+      '',
       '\\begin{tabular}[t]{@{}lrr@{}}',
       '\\toprule',
       'Модуль (рядки, \\%) & Модульні & Інтеграційні\\\\',

@@ -1,4 +1,4 @@
-% Демо-презентація етапу 4 — ШАБЛОН (структура з docs/stage4.md). Заповнити фактами.
+% Демо-презентація етапу 4 (структура — docs/stage4.md). Цифри — з pnpm test:report і OpenAPI.
 \documentclass[aspectratio=169,11pt]{beamer}
 \usetheme{metropolis}
 \usepackage{fontspec}
@@ -6,11 +6,13 @@
 \setmainlanguage{ukrainian}
 \setmainfont{DejaVuSans}[Extension=.ttf,UprightFont=*,BoldFont=*-Bold,ItalicFont=*-Oblique,BoldItalicFont=*-BoldOblique]
 \setsansfont{DejaVuSans}[Extension=.ttf,UprightFont=*,BoldFont=*-Bold,ItalicFont=*-Oblique,BoldItalicFont=*-BoldOblique]
+\setmonofont{DejaVuSansMono}[Extension=.ttf,UprightFont=*,BoldFont=*-Bold,ItalicFont=*-Oblique,BoldItalicFont=*-BoldOblique,Scale=0.9]
 \usepackage{booktabs,tabularx,array,colortbl,xcolor}
 \definecolor{sgreen}{HTML}{E2F0D9}
 \definecolor{wred}{HTML}{FBE5D6}
 \definecolor{oblue}{HTML}{DEEBF7}
 \definecolor{tyellow}{HTML}{FFF2CC}
+\definecolor{ink}{HTML}{2132A8}
 \newcolumntype{Y}{>{\raggedright\arraybackslash}X}
 \setbeamerfont{frametitle}{size=\large}
 \setbeamertemplate{itemize items}{\textbullet}
@@ -18,73 +20,184 @@
 \graphicspath{{img/}{../docs/uml/out/}}
 \newcommand{\todo}[1]{\textcolor{red}{\textbf{[TODO: #1]}}}
 \newcommand{\img}[2][0.95\textwidth]{\IfFileExists{img/#2}{\includegraphics[width=#1,height=0.78\textheight,keepaspectratio]{#2}}{\IfFileExists{../docs/uml/out/#2}{\includegraphics[width=#1,height=0.78\textheight,keepaspectratio]{#2}}{\todo{#2}}}}
+\newcommand{\bignum}[2]{\begin{minipage}[t]{0.23\textwidth}\centering{\Huge\bfseries\color{ink}#1}\\[2pt]{\small #2}\end{minipage}}
 
 \title{StudyFlow: реалізація прототипу}
 \subtitle{Інформаційні технології, Модуль 2 — Етап 4}
 \author{Петров Богдан \and Мекшаков Артемій}
 \institute{Група МІ-41}
-\date{\todo{дата захисту}}
+\date{18 листопада 2026}
 
 \begin{document}
 \maketitle
 
-\begin{frame}{StudyFlow}
-\todo{проблема → рішення в 3 пунктах; стек}
+\begin{frame}{StudyFlow в одному слайді}
+\footnotesize
+\begin{columns}[T]
+\column{0.5\textwidth}
+\textbf{Проблема}
+\begin{itemize}
+  \item дедлайни розкидані між Classroom і чатами
+  \item староста дублює їх вручну
+  \item не видно, хто вже здав
+\end{itemize}
+\textbf{Рішення}
+\begin{itemize}
+  \item староста створює дедлайн один раз --- він у календарі кожного
+  \item кожен відмічає виконання сам
+  \item група бачить прогрес у відсотках
+\end{itemize}
+\column{0.46\textwidth}
+\textbf{Стек}
+\begin{itemize}
+  \item Next.js 16, Tailwind 4, shadcn/ui, TanStack Query
+  \item NestJS 12, Prisma 7, PostgreSQL 16
+  \item JWT (access у пам'яті, refresh у httpOnly cookie)
+  \item Vitest, supertest, Playwright
+  \item Docker Compose, GitHub Actions, Swagger
+\end{itemize}
+\end{columns}
 \end{frame}
 
 \begin{frame}{План спринта: план vs факт}
-\todo{обсяг спринтів 1--3: SP план/факт, Done/перенесено; скріншот Notion}
+\begin{columns}[T]
+\column{0.44\textwidth}
+\small
+\begin{tabular}{@{}lccc@{}}
+\toprule
+Спринт & ID & План SP & Done SP\\
+\midrule
+1 & 11 & 22 & 22\\
+2 & 11 & 24 & 24\\
+3 & 9 & 22 & 22\\
+\midrule
+\textbf{Разом} & \textbf{31} & \textbf{68} & \textbf{68}\\
+\bottomrule
+\end{tabular}
+\medskip
+
+Усі 31 елемент спринтів 1--3 --- Done: Must, Should і Could (US-21, перетягування).
+\column{0.54\textwidth}
+\centering\img{notion-sprints.png}
+\end{columns}
 \end{frame}
 
-\begin{frame}{Архітектура}
-\centering\img{component.png}
+\begin{frame}{Архітектура: модульний моноліт}
+\centering\img[0.92\textwidth]{component.png}
 \end{frame}
 
-\begin{frame}{Модель даних}
-\centering\img{er.png}
+\begin{frame}{Модель даних: 8 таблиць}
+\centering\img[0.8\textwidth]{er.png}
 \end{frame}
 
-\begin{frame}{UML}
-\centering\img[0.48\textwidth]{use-case.png}\hfill\img[0.48\textwidth]{sequence-group-deadline.png}
+\begin{frame}{UML: варіанти використання і груповий дедлайн}
+\centering\img[0.3\textwidth]{use-case.png}\hfill\img[0.66\textwidth]{sequence-group-deadline.png}
 \end{frame}
 
 \begin{frame}{Демо поточної версії}
 \begin{enumerate}
-  \item Староста створює груповий дедлайн
-  \item Учасник бачить його в календарі й відмічає виконання
-  \item Прогрес групи оновлюється
-  \item Канбан: задача → «Готово»
-  \item Нагадування на e-mail (Mailpit)
-  \item Swagger
+  \item Староста: група «МІ-41» $\to$ новий груповий дедлайн на завтра з предметом
+  \item Учасник (інкогніто): дедлайн уже в календарі тижня $\to$ відмітити виконаним
+  \item Староста: оновити сторінку групи --- прогрес зріс
+  \item Канбан: перетягнути задачу «В роботі» $\to$ «Готово»
+  \item Swagger: \texttt{POST /api/dev/reminders/run} $\to$ лист у Mailpit
+  \item Swagger \texttt{/api/docs}: теги і схеми DTO
 \end{enumerate}
 \end{frame}
 
-\begin{frame}{Скріншоти}
-\centering\img[0.48\textwidth]{dashboard.png}\hfill\img[0.48\textwidth]{calendar-week.png}
+\begin{frame}{Скріншоти: дедлайни і календар}
+\centering\img[0.49\textwidth]{dashboard.png}\hfill\img[0.49\textwidth]{calendar-week.png}
 \end{frame}
 
-\begin{frame}{Скріншоти}
-\centering\img[0.48\textwidth]{group.png}\hfill\img[0.48\textwidth]{board.png}
+\begin{frame}{Скріншоти: група, канбан, нагадування}
+\centering\img[0.325\textwidth]{group.png}\hfill\img[0.325\textwidth]{board.png}\hfill\img[0.325\textwidth]{mailpit.png}
 \end{frame}
 
 \begin{frame}{Модульні тести}
-\todo{N/N passed, coverage, приклади UT-xx}
+\centering
+\bignum{40/40}{пройдено}\hfill\bignum{54\,\%}{рядків покрито}\hfill\bignum{8}{модулів з тестами}\hfill\bignum{1{,}2 с}{прогін}
+\vspace{1.2em}
+\raggedright\small
+\begin{itemize}
+  \item Vitest, Prisma замокано (\texttt{vitest-mock-extended}), сервіси без DI
+  \item UT-07 refresh зі старим токеном $\to$ 401 \quad UT-15 останнього старосту не понизити
+  \item UT-27 2 з 4 $\to$ 50\,\% \quad UT-33 повторний запуск нагадувань не шле дублікатів
+  \item журнал з ID --- у Додатку~А звіту (\texttt{pnpm test:report})
+\end{itemize}
 \end{frame}
 
 \begin{frame}{Інтеграційні та E2E-тести}
-\todo{таблиця результатів IT-xx, E2E-xx}
+\footnotesize
+\begin{tabularx}{\textwidth}{@{}l Y c@{}}
+\toprule
+Набір & Що перевіряє & Результат\\
+\midrule
+Інтеграційні, 13 & реальна БД \texttt{studyflow\_test}, HTTP через supertest, пошта --- заглушка: auth і cookie, ролі (403), видимість дедлайнів, прогрес 50\,\%, фільтри, задачі, нагадування без дублікатів, Swagger & 13/13\\
+\midrule
+E2E, 3 & Playwright, два браузери: реєстрація $\to$ група $\to$ груповий дедлайн $\to$ вступ за кодом $\to$ відмітка $\to$ 50\,\%; невірний пароль; дедлайн у правильний день календаря & 3/3\\
+\bottomrule
+\end{tabularx}
+\medskip
+
+Покриття коду інтеграційними тестами --- 73{,}5\,\% рядків. Інтеграційні тести входять у CI (GitHub Actions + PostgreSQL).
 \end{frame}
 
 \begin{frame}{API-документація}
-\centering\img[0.8\textwidth]{swagger.png}
+\begin{columns}[T]
+\column{0.36\textwidth}
+\small
+\begin{itemize}
+  \item 34 операції, 8 тегів
+  \item Swagger UI --- \texttt{/api/docs}
+  \item \texttt{docs/api/openapi.json} у репозиторії
+  \item з нього генеруються типи фронтенду
+  \item помилки й DTO з прикладами, Bearer або cookie
+\end{itemize}
+\column{0.62\textwidth}
+\centering\img{swagger.png}
+\end{columns}
 \end{frame}
 
 \begin{frame}{Рефлексія спринта}
-\todo{Успіхи / Неуспіхи / Причини / Дії --- лише факти}
+\footnotesize
+\renewcommand{\arraystretch}{1.0}
+\begin{tabularx}{\textwidth}{|Y|Y|}
+\hline
+\cellcolor{sgreen}\textbf{Успіхи} & \cellcolor{wred}\textbf{Неуспіхи}\\
+\hline
+\cellcolor{sgreen!40}\begin{itemize}
+  \item 31 з 31 елемента, 68 SP --- включно з Should і Could
+  \item тестів більше за план: 40 / 13 / 3
+  \item правило $\to$ тест $\to$ журнал за ID
+\end{itemize} &
+\cellcolor{wred!40}\begin{itemize}
+  \item реалізація стартувала 10.11 замість 28.10
+  \item коміти з одного акаунта, без PR і рев'ю
+  \item CI ще не запускався в GitHub
+\end{itemize}\\
+\hline
+\cellcolor{oblue}\textbf{Причини} & \cellcolor{tyellow}\textbf{Дії на спринт 4}\\
+\hline
+\cellcolor{oblue!40}\begin{itemize}
+  \item спринти 1--2 пішли на документацію етапів 2--3
+  \item дедлайн етапу 4 --- 15.11 замість 18.11
+\end{itemize} &
+\cellcolor{tyellow!40}\begin{itemize}
+  \item feature-гілки з власних акаунтів, PR з рев'ю, CI
+  \item деплой першим; статуси в Notion після злиття
+  \item покриття модульними $\geq$70\,\%
+\end{itemize}\\
+\hline
+\end{tabularx}
 \end{frame}
 
 \begin{frame}{Наступні кроки до 01.12}
-\todo{деплой, US-24, US-28, перенесене, фінальний звіт}
+\begin{itemize}
+  \item \textbf{T-09} деплой: web --- Vercel, API --- Railway/Render, керований PostgreSQL; публічне посилання
+  \item \textbf{US-24} налаштування нагадувань (поля в БД уже є) і \textbf{US-28} особиста статистика
+  \item пілот у групі МІ-41 --- зібрати відгуки
+  \item \textbf{D-03} фінальний звіт і презентація модуля
+\end{itemize}
 \end{frame}
 
 \end{document}
